@@ -1,14 +1,18 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+/*import { Image } from 'expo-image';*/
+import { StyleSheet } from 'react-native';
 
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+/*import ParallaxScrollView from '@/components/parallax-scroll-view';*/
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
+    <ThemedView style={styles.container}>
+      <ThemedText type="title" style={styles.title}>
+        Go/No Go Screen
+      </ThemedText>
+    </ThemedView>
+    /*<ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
         <Image
@@ -18,7 +22,6 @@ export default function HomeScreen() {
       }>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Hazmat Detection Drone Module</ThemedText>
-        {/*<HelloWave />*/}
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
@@ -73,15 +76,18 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
-    </ParallaxScrollView>
+    </ParallaxScrollView>*/
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    paddingTop: 48,
+    paddingLeft: 16,
+  },
+  title: {
+    textAlign: 'left',
   },
   stepContainer: {
     gap: 8,
