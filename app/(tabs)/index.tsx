@@ -4,14 +4,17 @@ import { StyleSheet } from 'react-native';
 /*import ParallaxScrollView from '@/components/parallax-scroll-view';*/
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
-        Go/No Go Screen
-      </ThemedText>
-    </ThemedView>
+    <SafeAreaView style={styles.safeArea}>
+      <ThemedView style={styles.header}>
+        <ThemedText type="title" style={styles.title}>
+          GO/NO-GO
+        </ThemedText>
+      </ThemedView>
+    </SafeAreaView>
     /*<ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
@@ -81,13 +84,23 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    paddingTop: 48,
-    paddingLeft: 16,
+    backgroundColor: '#D3D3D3', // Light gray
+  },
+  content: {
+    flex: 1,
+    backgroundColor: '#D3D3D3',
+  },
+  header: {
+    height: 64,
+    backgroundColor: '#9D2235', // Razorback Red
+    justifyContent: 'center',
+    paddingHorizontal: 16,
   },
   title: {
     textAlign: 'left',
+    color: 'white',
   },
   stepContainer: {
     gap: 8,
