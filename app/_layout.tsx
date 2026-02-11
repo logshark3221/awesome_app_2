@@ -1,4 +1,4 @@
-import { ThemedText } from '@/components/themed-text';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, usePathname, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -12,7 +12,7 @@ export default function RootLayout() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isExplore = pathname == '/explore';
+  const isExplore = pathname === '/explore';
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -22,7 +22,9 @@ export default function RootLayout() {
 
       {/* Bottom banner */}
       <View style={styles.bottomBanner}>
-        <Pressable style={styles.button}
+        <Pressable style={[
+          styles.button,
+        ]}
         onPress={() => {
           if (isExplore) {
             router.replace('/');
@@ -31,9 +33,10 @@ export default function RootLayout() {
             router.replace('/explore');
           }
         }}>
-          <ThemedText style={styles.buttonText}>
-            THRESHOLDS
-          </ThemedText>
+          <IconSymbol
+            name="pencil.and.outline"
+            size={28}
+            color={isExplore? '#9D2235' : 'black'} />
         </Pressable>
       </View>
       <StatusBar style="auto" />
@@ -43,17 +46,22 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   bottomBanner: {
-    height: 100,
+    height: 150,
     backgroundColor: '#9D2235',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   button: {
+    position: 'absolute',
+    right: 30,
+    top: 16,
+    width: 80,
+    height: 80,
     backgroundColor: '#D3D3D3',
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 40,
   },
 
   buttonText: {
