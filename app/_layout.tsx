@@ -1,4 +1,4 @@
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, usePathname, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -33,9 +33,9 @@ export default function RootLayout() {
             router.replace('/explore');
           }
         }}>
-          <IconSymbol
-            name="pencil.and.outline"
-            size={28}
+          <MaterialCommunityIcons
+            name="pencil-box-outline"
+            size={48}
             color={isExplore? '#9D2235' : 'black'} />
         </Pressable>
       </View>
@@ -59,9 +59,9 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     backgroundColor: '#D3D3D3',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
     borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   buttonText: {
