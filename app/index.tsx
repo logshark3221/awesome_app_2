@@ -1,19 +1,34 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const TRACK_HEIGHT = 400;
 const CIRCLE_SIZE = 40;
+const RECT_HEIGHT = 40;
 const CIRCLE_COUNT = 5;
 const spacing = (TRACK_HEIGHT - CIRCLE_COUNT * CIRCLE_SIZE) / (CIRCLE_COUNT + 1);
 
 export default function HomeScreen() {
 
-  const locations = Array.from({ length: CIRCLE_COUNT }, (_, i) => ({
-    id: i,
-    top: spacing + i * (CIRCLE_SIZE + spacing),
-  }))
+  const items = [
+    { type: 'chemical', label: 'H₂S' },
+    { type: 'chemical', label: 'O₂' },
+    { type: 'chemical', label: 'CO' },
+    { type: 'chemical', label: 'CH₄' },
+    { type: 'icon', name: 'thermometer-outline'},
+  ];
+
+  const locations = items.map((item, i) => {
+    return {
+      id: i,
+      top: spacing + i * (CIRCLE_SIZE + spacing),
+      type: item.type,
+      label: item.label,
+      name: item.name,
+  };
+});
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -24,9 +39,25 @@ export default function HomeScreen() {
       </ThemedView> {/* End of header */}
       <View style={styles.content}> {/* Start of main body */}
         <View style={styles.trackContainer}>
-          <View style={styles.rectangle} />
+          <View style={styles.vRectangle} />
           {locations.map(loc => (
-            <View key={loc.id} style={[styles.circle, {top: loc.top}]} />
+            <View key={loc.id} style={{ position: 'absolute',
+            top: loc.top,
+            left: 0,
+            right: 0,
+            flexDirection: 'row',
+            alignItems: 'center' }}>
+              <View style={styles.circle} />
+              <View style={[styles.hRectangle, { marginLeft: 40 }]}>
+                {loc.type === 'chemical' ? (
+                  <ThemedText style={styles.rectText}>
+                    {loc.label}
+                  </ThemedText>
+                ): (
+                  <Ionicons name={loc.name as any} size={22} color="red" />
+                )}
+                </View>
+            </View>
           ))}
         </View>
       </View> {/* End of main body */}
@@ -55,11 +86,12 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'left',
     color: 'white',
+    fontFamily: 'jost',
   },
 
-  rectangle: {
+  vRectangle: {
     position: 'absolute',
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#F8F8F8', // Lighter gray
     left: 0,
     top: 0,
     height: TRACK_HEIGHT,
@@ -67,10 +99,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 
+  hRectangle: {
+    backgroundColor: '#F8F8F8',
+    height: RECT_HEIGHT,
+    width: 100,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  rectText: {
+    fontWeight: 600,
+    color: 'red',
+  },
+
   circle: {
-    position: 'absolute',
     backgroundColor: 'red',
-    left: 10,
+    marginLeft: 10,
     height: CIRCLE_SIZE,
     width: CIRCLE_SIZE,
     borderRadius: 20,
@@ -80,6 +125,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 20,
     top: 60,
+    width: 200,
+    height: TRACK_HEIGHT,
   },
 
   track: {
