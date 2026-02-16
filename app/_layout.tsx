@@ -70,9 +70,8 @@ const styles = StyleSheet.create({
   header: {
     height: 64,
     backgroundColor: '#9D2235', // Razorback Red
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     paddingHorizontal: 16,
-    paddingBottom: 12,
   },
 
   title: {

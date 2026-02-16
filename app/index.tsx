@@ -1,13 +1,10 @@
 import { ThemedText } from '@/components/themed-text';
+import { useScreen } from '@/hooks/use-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const TRACK_HEIGHT = 400;
-const CIRCLE_SIZE = 40;
-const RECT_HEIGHT = 40;
 const CIRCLE_COUNT = 5;
-const spacing = (TRACK_HEIGHT - CIRCLE_COUNT * CIRCLE_SIZE) / (CIRCLE_COUNT + 1);
 
 export default function HomeScreen() {
 
@@ -22,6 +19,14 @@ export default function HomeScreen() {
     { type: 'chemical', label: 'CH₄', value: '20.00' },
     { type: 'icon', name: 'thermometer-outline', value: '20.00'},
   ];
+
+  const { windowWidth, windowHeight } = useScreen();
+  const styles = createStyles(windowWidth, windowHeight);
+
+  const TRACK_HEIGHT = windowHeight * 0.5;
+  const CIRCLE_SIZE = windowHeight * 0.05;
+
+  const spacing = (TRACK_HEIGHT - CIRCLE_COUNT * CIRCLE_SIZE) / (CIRCLE_COUNT + 1);
 
   const locations = items.map((item, i) => {
     return {
@@ -44,7 +49,7 @@ export default function HomeScreen() {
             flexDirection: 'row',
             alignItems: 'center' }}>
               <View style={styles.circle} />
-              <View style={[styles.hRectangle, { marginLeft: 30 }]}>
+              <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.05 }]}>
                 {loc.type === 'chemical' && (
                   <ThemedText style={styles.rectText}>
                     {loc.label}
@@ -54,7 +59,7 @@ export default function HomeScreen() {
                   <Ionicons name={loc.name} size={22} color="red" />
                 )}
                 </View>
-                <View style={[styles.hRectangle, { marginLeft: 20 }]}>
+                <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.05 }]}>
                   <ThemedText style={styles.rectText}>
                     {loc.value}
                   </ThemedText>
@@ -67,7 +72,7 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#D3D3D3', // Light gray
@@ -76,13 +81,6 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: '#D3D3D3',
-  },
-
-  header: {
-    height: 64,
-    backgroundColor: '#9D2235', // Razorback Red
-    justifyContent: 'center',
-    paddingHorizontal: 16,
   },
 
   title: {
@@ -96,15 +94,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8', // Lighter gray
     left: 0,
     top: 0,
-    height: TRACK_HEIGHT,
-    width: 60,
+    height: windowHeight * 0.5,
+    width: windowWidth * 0.15, //60
     borderRadius: 10,
   },
 
   hRectangle: {
     backgroundColor: '#F8F8F8',
-    height: RECT_HEIGHT,
-    width: 100,
+    height: windowWidth * 0.1,
+    width: windowWidth * 0.25,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -117,23 +115,23 @@ const styles = StyleSheet.create({
 
   circle: {
     backgroundColor: 'red',
-    marginLeft: 10,
-    height: CIRCLE_SIZE,
-    width: CIRCLE_SIZE,
-    borderRadius: 20,
+    marginLeft: windowWidth * 0.025,
+    height: windowWidth * 0.1,
+    width: windowWidth * 0.1,
+    borderRadius: windowWidth * 0.05,
   },
 
   trackContainer: {
     position: 'absolute',
-    left: 20,
-    top: 60,
-    width: 200,
-    height: TRACK_HEIGHT,
+    left: windowWidth * 0.05,
+    top: windowHeight * 0.07,
+    width: windowWidth * 0.5,
+    height: windowHeight * 0.5,
   },
 
   track: {
     position: 'relative',
-    width: 60,
-    height: 400,
+    width: windowWidth * 0.15,
+    height: windowHeight * 0.5,
   },
 });
