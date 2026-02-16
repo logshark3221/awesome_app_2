@@ -34,12 +34,12 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ThemedView style={styles.header}> {/* Start of header */}
+      <ThemedView style={styles.header}>
         <ThemedText type="title" style={styles.title}>
           GO/NO-GO
         </ThemedText>
-      </ThemedView> {/* End of header */}
-      <View style={styles.content}> {/* Start of main body */}
+      </ThemedView>
+      <View style={styles.content}>
         <View style={styles.trackContainer}>
           <View style={styles.vRectangle} />
           {locations.map(loc => (
@@ -63,7 +63,7 @@ export default function HomeScreen() {
             </View>
           ))}
         </View>
-      </View> {/* End of main body */}
+      </View>
     </SafeAreaView>
   );
 }
