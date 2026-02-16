@@ -1,5 +1,4 @@
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -34,11 +33,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ThemedView style={styles.header}>
-        <ThemedText type="title" style={styles.title}>
-          GO/NO-GO
-        </ThemedText>
-      </ThemedView>
       <View style={styles.content}>
         <View style={styles.trackContainer}>
           <View style={styles.vRectangle} />

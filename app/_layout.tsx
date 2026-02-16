@@ -1,3 +1,4 @@
+import { ThemedText } from '@/components/themed-text';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, usePathname, useRouter } from 'expo-router';
@@ -16,30 +17,36 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-
-      {/* Bottom banner */}
-      <View style={styles.bottomBanner}>
-        <Pressable style={[
-          styles.button,
-        ]}
-        onPress={() => {
-          if (isExplore) {
-            router.replace('/');
-          }
-          else {
-            router.replace('/explore');
-          }
-        }}>
-          <MaterialCommunityIcons
-            name="pencil-box-outline"
-            size={48}
-            color={isExplore? '#9D2235' : 'black'} />
-        </Pressable>
+      <View style={{ flex: 1}}>
+        <View style={styles.header}>
+          <ThemedText type="title" style={styles.title}>
+            {pathname === '/' ? 'GO/NO-GO': 'THRESHOLDS'}
+          </ThemedText>
+        </View>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        </Stack>
+        {/* Bottom banner */}
+        <View style={styles.bottomBanner}>
+          <Pressable style={[
+            styles.button,
+          ]}
+          onPress={() => {
+            if (isExplore) {
+              router.replace('/');
+            }
+            else {
+              router.replace('/explore');
+            }
+          }}>
+            <MaterialCommunityIcons
+              name="pencil-box-outline"
+              size={48}
+              color={isExplore? '#9D2235' : 'black'} />
+          </Pressable>
+        </View>
+        <StatusBar style="auto" />
       </View>
-      <StatusBar style="auto" />
     </ThemeProvider>
   );
 }
@@ -50,6 +57,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#9D2235',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  header: {
+    height: 64,
+    backgroundColor: '#9D2235', // Razorback Red
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+
+  title: {
+    textAlign: 'left',
+    color: 'white',
+    fontFamily: 'jost',
   },
 
   button: {
