@@ -7,6 +7,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -17,50 +18,57 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <View style={{ flex: 1}}>
-        <View style={styles.header}>
-          <ThemedText type="title" style={styles.title}>
-            {pathname === '/' ? 'GO/NO-GO': 'THRESHOLDS'}
-          </ThemedText>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={{ flex: 1}}>
+          <View style={styles.header}>
+            <ThemedText type="title" style={styles.title}>
+              {pathname === '/' ? 'GO/NO-GO': 'THRESHOLDS'}
+            </ThemedText>
+          </View>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+          </Stack>
+          {/* Bottom banner */}
+          <View style={styles.bottomBanner}>
+            <Pressable style={[
+              styles.button,
+            ]}
+            onPress={() => {
+              if (isExplore) {
+                router.replace('/');
+              }
+              else {
+                router.replace('/explore');
+              }
+            }}>
+              <MaterialCommunityIcons
+                name="pencil-box-outline"
+                size={48}
+                color={isExplore? '#9D2235' : 'black'} />
+            </Pressable>
+          </View>
+          <StatusBar style="auto" />
         </View>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-        </Stack>
-        {/* Bottom banner */}
-        <View style={styles.bottomBanner}>
-          <Pressable style={[
-            styles.button,
-          ]}
-          onPress={() => {
-            if (isExplore) {
-              router.replace('/');
-            }
-            else {
-              router.replace('/explore');
-            }
-          }}>
-            <MaterialCommunityIcons
-              name="pencil-box-outline"
-              size={48}
-              color={isExplore? '#9D2235' : 'black'} />
-          </Pressable>
-        </View>
-        <StatusBar style="auto" />
-      </View>
+      </SafeAreaView>
     </ThemeProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#9D2235', // Light gray
+  },
+  
   bottomBanner: {
-    height: 150,
+    height: 100,
     backgroundColor: '#9D2235',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   header: {
-    height: 100,
+    height: 64,
     backgroundColor: '#9D2235', // Razorback Red
     justifyContent: 'flex-end',
     paddingHorizontal: 16,
