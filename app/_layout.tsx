@@ -60,10 +60,11 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    height: 64,
+    height: 100,
     backgroundColor: '#9D2235', // Razorback Red
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     paddingHorizontal: 16,
+    paddingBottom: 12,
   },
 
   title: {

@@ -12,15 +12,15 @@ const spacing = (TRACK_HEIGHT - CIRCLE_COUNT * CIRCLE_SIZE) / (CIRCLE_COUNT + 1)
 export default function HomeScreen() {
 
   type Item = 
-    | { type: 'chemical'; label: string }
-    | { type: 'icon', name: keyof typeof Ionicons.glyphMap };
+    | { type: 'chemical'; label: string; value: string }
+    | { type: 'icon', name: keyof typeof Ionicons.glyphMap, value: string };
 
   const items: Item[] = [
-    { type: 'chemical', label: 'H₂S' },
-    { type: 'chemical', label: 'O₂' },
-    { type: 'chemical', label: 'CO' },
-    { type: 'chemical', label: 'CH₄' },
-    { type: 'icon', name: 'thermometer-outline'},
+    { type: 'chemical', label: 'H₂S', value: '20.00' },
+    { type: 'chemical', label: 'O₂', value: '20.00' },
+    { type: 'chemical', label: 'CO', value: '20.00' },
+    { type: 'chemical', label: 'CH₄', value: '20.00' },
+    { type: 'icon', name: 'thermometer-outline', value: '20.00'},
   ];
 
   const locations = items.map((item, i) => {
@@ -44,7 +44,7 @@ export default function HomeScreen() {
             flexDirection: 'row',
             alignItems: 'center' }}>
               <View style={styles.circle} />
-              <View style={[styles.hRectangle, { marginLeft: 40 }]}>
+              <View style={[styles.hRectangle, { marginLeft: 30 }]}>
                 {loc.type === 'chemical' && (
                   <ThemedText style={styles.rectText}>
                     {loc.label}
@@ -53,6 +53,11 @@ export default function HomeScreen() {
                 {loc.type === 'icon' && (
                   <Ionicons name={loc.name} size={22} color="red" />
                 )}
+                </View>
+                <View style={[styles.hRectangle, { marginLeft: 20 }]}>
+                  <ThemedText style={styles.rectText}>
+                    {loc.value}
+                  </ThemedText>
                 </View>
             </View>
           ))}
@@ -130,18 +135,5 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: 60,
     height: 400,
-  },
-
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
   },
 });
