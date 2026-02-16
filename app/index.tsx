@@ -12,7 +12,11 @@ const spacing = (TRACK_HEIGHT - CIRCLE_COUNT * CIRCLE_SIZE) / (CIRCLE_COUNT + 1)
 
 export default function HomeScreen() {
 
-  const items = [
+  type Item = 
+    | { type: 'chemical'; label: string }
+    | { type: 'icon', name: keyof typeof Ionicons.glyphMap };
+
+  const items: Item[] = [
     { type: 'chemical', label: 'H₂S' },
     { type: 'chemical', label: 'O₂' },
     { type: 'chemical', label: 'CO' },
@@ -24,9 +28,7 @@ export default function HomeScreen() {
     return {
       id: i,
       top: spacing + i * (CIRCLE_SIZE + spacing),
-      type: item.type,
-      label: item.label,
-      name: item.name,
+      ...item,
   };
 });
 
@@ -49,12 +51,13 @@ export default function HomeScreen() {
             alignItems: 'center' }}>
               <View style={styles.circle} />
               <View style={[styles.hRectangle, { marginLeft: 40 }]}>
-                {loc.type === 'chemical' ? (
+                {loc.type === 'chemical' && (
                   <ThemedText style={styles.rectText}>
                     {loc.label}
                   </ThemedText>
-                ): (
-                  <Ionicons name={loc.name as any} size={22} color="red" />
+                )}
+                {loc.type === 'icon' && (
+                  <Ionicons name={loc.name} size={22} color="red" />
                 )}
                 </View>
             </View>
