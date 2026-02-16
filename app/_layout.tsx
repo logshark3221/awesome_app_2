@@ -7,9 +7,13 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useScreen } from '@/hooks/use-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RootLayout() {
+  const { windowWidth, windowHeight } = useScreen();
+  const styles = createStyles(windowWidth, windowHeight);
+  
   const colorScheme = useColorScheme();
   const router = useRouter();
   const pathname = usePathname();
@@ -43,7 +47,7 @@ export default function RootLayout() {
             }}>
               <MaterialCommunityIcons
                 name="pencil-box-outline"
-                size={48}
+                size={windowWidth * 0.125}
                 color={isExplore? '#9D2235' : 'black'} />
             </Pressable>
           </View>
@@ -54,24 +58,24 @@ export default function RootLayout() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#9D2235', // Light gray
   },
   
   bottomBanner: {
-    height: 100,
+    height: windowHeight * 0.13,
     backgroundColor: '#9D2235',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   header: {
-    height: 64,
+    height: windowHeight * 0.07,
     backgroundColor: '#9D2235', // Razorback Red
     justifyContent: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: windowWidth * 0.05,
   },
 
   title: {
@@ -82,12 +86,12 @@ const styles = StyleSheet.create({
 
   button: {
     position: 'absolute',
-    right: 30,
-    top: 16,
-    width: 80,
-    height: 80,
+    right: windowWidth * 0.05,
+    top: windowWidth * 0.05,
+    width: windowWidth * 0.2,
+    height: windowWidth * 0.2,
     backgroundColor: '#D3D3D3',
-    borderRadius: 40,
+    borderRadius: windowWidth * 0.1,
     justifyContent: 'center',
     alignItems: 'center',
   },
