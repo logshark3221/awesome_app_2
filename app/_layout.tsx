@@ -42,7 +42,7 @@ export default function RootLayout() {
                 router.replace('/');
               }
               else {
-                router.replace('/explore');
+                router.replace('/thresholds');
               }
             }}>
               <MaterialCommunityIcons
