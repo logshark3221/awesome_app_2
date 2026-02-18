@@ -18,7 +18,7 @@ export default function RootLayout() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isExplore = pathname === '/explore';
+  const isThresholds = pathname === '/thresholds';
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -38,7 +38,7 @@ export default function RootLayout() {
               styles.button,
             ]}
             onPress={() => {
-              if (isExplore) {
+              if (isThresholds) {
                 router.replace('/');
               }
               else {
@@ -48,7 +48,7 @@ export default function RootLayout() {
               <MaterialCommunityIcons
                 name="pencil-box-outline"
                 size={windowWidth * 0.125}
-                color={isExplore? '#9D2235' : 'black'} />
+                color={isThresholds? '#9D2235' : 'black'} />
             </Pressable>
           </View>
           <StatusBar style="auto" />
