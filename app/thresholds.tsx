@@ -11,15 +11,45 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 import { useScreen } from '@/hooks/use-screen';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function ThresholdScreen() {
   const { windowWidth, windowHeight } = useScreen();
   const styles = createStyles(windowWidth, windowHeight);
 
-  const [H2SThreshold, onChangeH2S] = React.useState('20');
-  const [O2Threshold, onChangeO2] = React.useState('20');
-  const [COThreshold, onChangeCO] = React.useState('20');
-  const [CH4Threshold, onChangeCH4] = React.useState('20');
-  const [TemperatureThreshold, onChangeTemperature] = React.useState('20');
+  const [H2SThreshold, onChangeH2S] = React.useState('-1');
+  const [O2Threshold, onChangeO2] = React.useState('-1');
+  const [COThreshold, onChangeCO] = React.useState('-1');
+  const [CH4Threshold, onChangeCH4] = React.useState('-1');
+  const [TemperatureThreshold, onChangeTemperature] = React.useState('-1');
+
+  // Testing persistent data storage with async storage
+  const readThresholds = async (key: string, updateFunction: (arg0: string) => void) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        updateFunction(value);
+      }
+
+      else {
+        updateFunction('');
+      }
+    } catch(e) { }
+  }
+
+  const storeThresholds = async (updateFunction: (arg0: string) => void, key:string, value: string) => {
+    try {
+      await AsyncStorage.setItem(key, value);
+      updateFunction(value);
+    } catch(e) { }
+  }
+
+  // Reads thresholds
+  readThresholds('H2SThreshold', onChangeH2S)
+  readThresholds('O2Threshold', onChangeO2)
+  readThresholds('COThreshold', onChangeCO)
+  readThresholds('CH4Threshold', onChangeCH4)
+  readThresholds('TemperatureThreshold', onChangeTemperature)
   
   return (
     <ParallaxScrollView
@@ -45,7 +75,7 @@ export default function ThresholdScreen() {
       <ThemedText>H₂S</ThemedText>
         <TextInput
           style={styles.input}
-          onChangeText={onChangeH2S}
+          onChangeText={(text) => storeThresholds(onChangeH2S, 'H2SThreshold', text)}
           value={H2SThreshold}
           placeholder="20.00"
           keyboardType="numeric"
@@ -54,7 +84,7 @@ export default function ThresholdScreen() {
       <ThemedText>O₂</ThemedText>
       <TextInput
         style={styles.input}
-        onChangeText={onChangeO2}
+        onChangeText={(text) => storeThresholds(onChangeO2, 'O2Threshold', text)}
         value={O2Threshold}
         placeholder="20.00"
         keyboardType="numeric"
@@ -63,7 +93,7 @@ export default function ThresholdScreen() {
       <ThemedText>CO</ThemedText>
       <TextInput
         style={styles.input}
-        onChangeText={onChangeCO}
+        onChangeText={(text) => storeThresholds(onChangeCO, 'COThreshold', text)}
         value={COThreshold}
         placeholder="20.00"
         keyboardType="numeric"
@@ -72,7 +102,7 @@ export default function ThresholdScreen() {
       <ThemedText>CH₄</ThemedText>
       <TextInput
         style={styles.input}
-        onChangeText={onChangeCH4}
+        onChangeText={(text) => storeThresholds(onChangeCH4, 'CH4Threshold', text)}
         value={CH4Threshold}
         placeholder="20.00"
         keyboardType="numeric"
@@ -81,7 +111,7 @@ export default function ThresholdScreen() {
       <ThemedText>Temperature</ThemedText>
       <TextInput
         style={styles.input}
-        onChangeText={onChangeTemperature}
+        onChangeText={(text) => storeThresholds(onChangeTemperature, 'TemperatureThreshold', text)}
         value={TemperatureThreshold}
         placeholder="20.00"
         keyboardType="numeric"

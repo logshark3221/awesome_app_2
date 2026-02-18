@@ -4,6 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const CIRCLE_COUNT = 5;
 
 export default function HomeScreen() {
@@ -12,12 +14,26 @@ export default function HomeScreen() {
     | { type: 'chemical'; label: string; value: string, unit: string, }
     | { type: 'icon', name: keyof typeof Ionicons.glyphMap, value: string, unit: string, };
 
+    // Testing persistent data storage with async storage
+    const readThresholdsDisplay = async (key:string) => {
+      try {
+        const value = await AsyncStorage.getItem(key);
+        if (value !== null) {
+          return value;
+        }
+
+        else {
+          return '20.00';  // Values not set are defaulted to 20.00
+        }
+      } catch(e) { }
+    }
+
   const items: Item[] = [
-    { type: 'chemical', label: 'H₂S', value: '20.00', unit: 'PPM', },
-    { type: 'chemical', label: 'O₂', value: '20.00', unit: 'PPM', },
-    { type: 'chemical', label: 'CO', value: '20.00', unit: 'PPM', },
-    { type: 'chemical', label: 'CH₄', value: '20.00', unit: 'PPM', },
-    { type: 'icon', name: 'thermometer-outline', value: '20.00', unit: 'F', },
+    { type: 'chemical', label: 'H₂S', value: readThresholdsDisplay('H2SThreshold'), unit: 'PPM', },
+    { type: 'chemical', label: 'O₂', value: readThresholdsDisplay('O2Threshold'), unit: 'PPM', },
+    { type: 'chemical', label: 'CO', value: readThresholdsDisplay('COThreshold'), unit: 'PPM', },
+    { type: 'chemical', label: 'CH₄', value: readThresholdsDisplay('CH4Threshold'), unit: 'PPM', },
+    { type: 'icon', name: 'thermometer-outline', value: readThresholdsDisplay('TemperatureThreshold'), unit: 'F', },
   ];
 
   const { windowWidth, windowHeight } = useScreen();
