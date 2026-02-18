@@ -9,15 +9,15 @@ const CIRCLE_COUNT = 5;
 export default function HomeScreen() {
 
   type Item = 
-    | { type: 'chemical'; label: string; value: string }
-    | { type: 'icon', name: keyof typeof Ionicons.glyphMap, value: string };
+    | { type: 'chemical'; label: string; value: string, unit: string, }
+    | { type: 'icon', name: keyof typeof Ionicons.glyphMap, value: string, unit: string, };
 
   const items: Item[] = [
-    { type: 'chemical', label: 'H₂S', value: '20.00' },
-    { type: 'chemical', label: 'O₂', value: '20.00' },
-    { type: 'chemical', label: 'CO', value: '20.00' },
-    { type: 'chemical', label: 'CH₄', value: '20.00' },
-    { type: 'icon', name: 'thermometer-outline', value: '20.00'},
+    { type: 'chemical', label: 'H₂S', value: '20.00', unit: 'PPM', },
+    { type: 'chemical', label: 'O₂', value: '20.00', unit: 'PPM', },
+    { type: 'chemical', label: 'CO', value: '20.00', unit: 'PPM', },
+    { type: 'chemical', label: 'CH₄', value: '20.00', unit: 'PPM', },
+    { type: 'icon', name: 'thermometer-outline', value: '20.00', unit: 'F', },
   ];
 
   const { windowWidth, windowHeight } = useScreen();
@@ -59,9 +59,14 @@ export default function HomeScreen() {
                   <Ionicons name={loc.name} size={22} color="red" />
                 )}
                 </View>
-                <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.05 }]}>
+                <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.03 }]}>
                   <ThemedText style={styles.rectText}>
                     {loc.value}
+                  </ThemedText>
+                </View>
+                <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.03 }]}>
+                  <ThemedText style={styles.rectText}>
+                    {loc.unit}
                   </ThemedText>
                 </View>
             </View>
@@ -102,7 +107,7 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
   hRectangle: {
     backgroundColor: '#F8F8F8',
     height: windowWidth * 0.1,
-    width: windowWidth * 0.25,
+    width: windowWidth * 0.23,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -111,6 +116,7 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
   rectText: {
     fontWeight: 600,
     color: 'red',
+    fontFamily: 'jost',
   },
 
   circle: {
