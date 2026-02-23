@@ -1,12 +1,9 @@
 import React from 'react';
-import { Image } from 'expo-image';
-import { Platform, StyleSheet, TextInput } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 
-import { ExternalLink } from '@/components/external-link';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Collapsible } from '@/components/ui/collapsible';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 import { useScreen } from '@/hooks/use-screen';
@@ -77,7 +74,7 @@ export default function ThresholdScreen() {
           style={styles.input}
           onChangeText={(text) => storeThresholds(onChangeH2S, 'H2SThreshold', text)}
           value={H2SThreshold}
-          placeholder="20.00"
+          placeholder="100.00"
           keyboardType="numeric"
       />
 
@@ -86,7 +83,7 @@ export default function ThresholdScreen() {
         style={styles.input}
         onChangeText={(text) => storeThresholds(onChangeO2, 'O2Threshold', text)}
         value={O2Threshold}
-        placeholder="20.00"
+        placeholder="235000.00"
         keyboardType="numeric"
       />
 
@@ -95,7 +92,7 @@ export default function ThresholdScreen() {
         style={styles.input}
         onChangeText={(text) => storeThresholds(onChangeCO, 'COThreshold', text)}
         value={COThreshold}
-        placeholder="20.00"
+        placeholder="100.00"
         keyboardType="numeric"
       />
 
@@ -104,7 +101,7 @@ export default function ThresholdScreen() {
         style={styles.input}
         onChangeText={(text) => storeThresholds(onChangeCH4, 'CH4Threshold', text)}
         value={CH4Threshold}
-        placeholder="20.00"
+        placeholder="5000.00"
         keyboardType="numeric"
       />
 
@@ -113,7 +110,7 @@ export default function ThresholdScreen() {
         style={styles.input}
         onChangeText={(text) => storeThresholds(onChangeTemperature, 'TemperatureThreshold', text)}
         value={TemperatureThreshold}
-        placeholder="20.00"
+        placeholder="95.00"
         keyboardType="numeric"
       />
     </ParallaxScrollView>

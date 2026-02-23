@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { useScreen } from '@/hooks/use-screen';
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -10,30 +11,108 @@ const CIRCLE_COUNT = 5;
 
 export default function HomeScreen() {
 
+  const DEFAULT_THRESHOLDS = {
+    H2SThreshold: '100.00',
+    O2Threshold: '235000.00',
+    COThreshold: '100.00',
+    CH4Threshold: '5000.00',
+    TempThreshold: '95.00',
+  };
+
+  const [thresholds, setThresholds] = useState(DEFAULT_THRESHOLDS);
+
+  const [readings, setReadings] = useState({
+    H2S: 0,
+    O2: 0,
+    CO: 0,
+    CH4: 0,
+    Temp: 0,
+  });
+
+  useEffect(() => {
+    const loadThresholds = async () => {
+      const updated = { ...DEFAULT_THRESHOLDS };
+      for (const key of Object.keys(DEFAULT_THRESHOLDS)) {
+        const stored = await AsyncStorage.getItem(key);
+        if (stored !== null) {
+          updated[key as keyof typeof DEFAULT_THRESHOLDS] = stored;
+        }
+      }
+      setThresholds(updated);
+    };
+    loadThresholds();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setReadings({
+        H2S: Math.random() * 200,
+        O2: Math.random() * 500000,
+        CO: Math.random() * 200,
+        CH4: Math.random() * 6000,
+        Temp: Math.random() * 150,
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getColor = (reading: number, threshold: string) => {
+    const thresholdNum = parseFloat(threshold);
+    return reading > thresholdNum ? 'red' : 'green';
+  };
+
   type Item = 
-    | { type: 'chemical'; label: string; value: string, unit: string, }
-    | { type: 'icon', name: keyof typeof Ionicons.glyphMap, value: string, unit: string, };
-
-    // Testing persistent data storage with async storage
-    const readThresholdsDisplay = async (key:string) => {
-      try {
-        const value = await AsyncStorage.getItem(key);
-        if (value !== null) {
-          return value;
-        }
-
-        else {
-          return '20.00';  // Values not set are defaulted to 20.00
-        }
-      } catch(e) { }
+    | {
+      type: 'chemical';
+      label: string;
+      value: number;
+      threshold: string;
+      unit: string;
     }
+    | {
+      type: 'icon';
+      name: keyof typeof Ionicons.glyphMap;
+      value: number;
+      threshold: string;
+      unit: string;
+    };
 
   const items: Item[] = [
-    { type: 'chemical', label: 'H₂S', value: readThresholdsDisplay('H2SThreshold'), unit: 'PPM', },
-    { type: 'chemical', label: 'O₂', value: readThresholdsDisplay('O2Threshold'), unit: 'PPM', },
-    { type: 'chemical', label: 'CO', value: readThresholdsDisplay('COThreshold'), unit: 'PPM', },
-    { type: 'chemical', label: 'CH₄', value: readThresholdsDisplay('CH4Threshold'), unit: 'PPM', },
-    { type: 'icon', name: 'thermometer-outline', value: readThresholdsDisplay('TemperatureThreshold'), unit: 'F', },
+    {
+      type: 'chemical',
+      label: 'H₂S',
+      value: readings.H2S,
+      threshold: thresholds.H2SThreshold,
+      unit: 'PPM',
+    },
+    {
+      type: 'chemical',
+      label: 'O₂',
+      value: readings.O2,
+      threshold: thresholds.O2Threshold,
+      unit: 'PPM',
+    },
+    {
+      type: 'chemical',
+      label: 'CO',
+      value: readings.CO,
+      threshold: thresholds.COThreshold,
+      unit: 'PPM',
+    },
+    {
+      type: 'chemical',
+      label: 'CH₄',
+      value: readings.CH4,
+      threshold: thresholds.CH4Threshold,
+      unit: 'PPM',
+    },
+    {
+      type: 'icon',
+      name: 'thermometer-outline',
+      value: readings.Temp,
+      threshold: thresholds.TempThreshold,
+      unit: 'F',
+    },
   ];
 
   const { windowWidth, windowHeight } = useScreen();
@@ -64,24 +143,33 @@ export default function HomeScreen() {
             right: 0,
             flexDirection: 'row',
             alignItems: 'center' }}>
-              <View style={styles.circle} />
+              <View style={[styles.circle,
+                { backgroundColor: getColor(loc.value, loc.threshold)},
+              ]} />
               <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.05 }]}>
                 {loc.type === 'chemical' && (
-                  <ThemedText style={styles.rectText}>
+                  <ThemedText style={[styles.rectText,
+                    { color: getColor(loc.value, loc.threshold) },
+                  ]}>
                     {loc.label}
                   </ThemedText>
                 )}
                 {loc.type === 'icon' && (
-                  <Ionicons name={loc.name} size={22} color="red" />
+                  <Ionicons name={loc.name} size={22} color={getColor(loc.value, loc.threshold)} />
                 )}
                 </View>
                 <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.03 }]}>
-                  <ThemedText style={styles.rectText}>
-                    {loc.value}
+                  <ThemedText style={[
+                    styles.rectText,
+                    { color: getColor(loc.value, loc.threshold) },
+                  ]}>
+                    {loc.value.toFixed(2)}
                   </ThemedText>
                 </View>
                 <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.03 }]}>
-                  <ThemedText style={styles.rectText}>
+                  <ThemedText style={[styles.rectText,
+                    { color: getColor(loc.value, loc.threshold) },
+                  ]}>
                     {loc.unit}
                   </ThemedText>
                 </View>
