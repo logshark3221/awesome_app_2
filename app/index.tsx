@@ -16,7 +16,7 @@ export default function HomeScreen() {
     O2Threshold: '235000.00',
     COThreshold: '100.00',
     CH4Threshold: '5000.00',
-    TempThreshold: '95.00',
+    TemperatureThreshold: '95.00',
   };
 
   const [thresholds, setThresholds] = useState(DEFAULT_THRESHOLDS);
@@ -110,7 +110,7 @@ export default function HomeScreen() {
       type: 'icon',
       name: 'thermometer-outline',
       value: readings.Temp,
-      threshold: thresholds.TempThreshold,
+      threshold: thresholds.TemperatureThreshold,
       unit: 'F',
     },
   ];
