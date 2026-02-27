@@ -1,4 +1,5 @@
 import { ThemedText } from '@/components/themed-text';
+import { useBluetoothData } from '@/hooks/use-bluetooth-data';
 import { useScreen } from '@/hooks/use-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
@@ -43,18 +44,31 @@ export default function HomeScreen() {
     loadThresholds();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setReadings({
-        H2S: Math.random() * 200,
-        O2: Math.random() * 500000,
-        CO: Math.random() * 200,
-        CH4: Math.random() * 6000,
-        Temp: Math.random() * 150,
-      });
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // set values based on Bluetooth data
+  const { latestPacket } = useBluetoothData();
+  useEffect(()=> {
+    if (!latestPacket) return;
+    setReadings({
+      H2S: latestPacket.parsedH2S,
+      O2: latestPacket.parsedO2,
+      CO: latestPacket.parsedCO,
+      CH4: latestPacket.parsedCH4,
+      Temp: latestPacket.parsedTemp,
+    });
+  }, [latestPacket]);
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setReadings({
+  //       H2S: Math.random() * 200,
+  //       O2: Math.random() * 500000,
+  //       CO: Math.random() * 200,
+  //       CH4: Math.random() * 6000,
+  //       Temp: Math.random() * 150,
+  //     });
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const getColor = (reading: number, threshold: string) => {
     const thresholdNum = parseFloat(threshold);
