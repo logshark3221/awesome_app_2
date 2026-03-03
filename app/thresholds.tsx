@@ -59,7 +59,7 @@ export default function ThresholdScreen() {
             style={styles.input}
             onChangeText={(text) => storeThresholds(onChangeH2S, 'H2SThreshold', text)}
             value={H2SThreshold}
-            placeholder="100.00"
+            placeholder="10.00"
             keyboardType="numeric"
         />
 
@@ -68,7 +68,7 @@ export default function ThresholdScreen() {
           style={styles.input}
           onChangeText={(text) => storeThresholds(onChangeO2, 'O2Threshold', text)}
           value={O2Threshold}
-          placeholder="235000.00"
+          placeholder="23.50"
           keyboardType="numeric"
         />
 
@@ -77,7 +77,7 @@ export default function ThresholdScreen() {
           style={styles.input}
           onChangeText={(text) => storeThresholds(onChangeCO, 'COThreshold', text)}
           value={COThreshold}
-          placeholder="100.00"
+          placeholder="50.00"
           keyboardType="numeric"
         />
 
@@ -86,7 +86,7 @@ export default function ThresholdScreen() {
           style={styles.input}
           onChangeText={(text) => storeThresholds(onChangeCH4, 'CH4Threshold', text)}
           value={CH4Threshold}
-          placeholder="5000.00"
+          placeholder="5.00"
           keyboardType="numeric"
         />
 

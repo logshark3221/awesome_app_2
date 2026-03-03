@@ -36,6 +36,30 @@ export default function RootLayout() {
           <View style={styles.bottomBanner}>
             <Pressable style={[
               styles.button,
+              {
+                position: 'absolute',
+                left: windowWidth * 0.05,
+              },
+            ]}>
+              <MaterialCommunityIcons
+                name="chart-line"
+                size={windowWidth * 0.125} />
+            </Pressable>
+
+            <Pressable style={[
+              styles.button,
+            ]}>
+              <MaterialCommunityIcons
+                name="database"
+                size={windowWidth * 0.125} />
+            </Pressable>
+
+            <Pressable style={[
+              styles.button,
+              {
+                position: 'absolute',
+                right: windowWidth * 0.05,
+              },
             ]}
             onPress={() => {
               if (isThresholds) {
@@ -67,8 +91,10 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
   bottomBanner: {
     height: windowHeight * 0.13,
     backgroundColor: '#9D2235',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
   },
 
   header: {
@@ -86,8 +112,6 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
 
   button: {
     position: 'absolute',
-    right: windowWidth * 0.05,
-    top: windowWidth * 0.05,
     width: windowWidth * 0.2,
     height: windowWidth * 0.2,
     backgroundColor: '#D3D3D3',

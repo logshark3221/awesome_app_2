@@ -13,10 +13,11 @@ const CIRCLE_COUNT = 5;
 export default function HomeScreen() {
 
   const DEFAULT_THRESHOLDS = {
-    H2SThreshold: '100.00',
-    O2Threshold: '235000.00',
-    COThreshold: '100.00',
-    CH4Threshold: '5000.00',
+    H2SThreshold: '10.00',
+    O2Threshold: '23.50',
+    O2LowerThreshold: '19.50',
+    COThreshold: '50.00',
+    CH4Threshold: '5.00',
     TemperatureThreshold: '95.00',
   };
 
@@ -57,74 +58,72 @@ export default function HomeScreen() {
     });
   }, [latestPacket]);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setReadings({
-  //       H2S: Math.random() * 200,
-  //       O2: Math.random() * 500000,
-  //       CO: Math.random() * 200,
-  //       CH4: Math.random() * 6000,
-  //       Temp: Math.random() * 150,
-  //     });
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  const getColor = (sensor: string, reading: number) => {
+    if (sensor === 'O2') {
+      const lower = parseFloat(thresholds.O2LowerThreshold);
+      const upper = parseFloat(thresholds.O2Threshold);
+      return reading < lower || reading > upper ? 'red' : 'green';
+    }
+    const thresholdMap: Record<string, string> = {
+      H2S: thresholds.H2SThreshold,
+      CO: thresholds.COThreshold,
+      CH4: thresholds.CH4Threshold,
+      Temp: thresholds.TemperatureThreshold,
+    };
 
-  const getColor = (reading: number, threshold: string) => {
-    const thresholdNum = parseFloat(threshold);
-    return reading > thresholdNum ? 'red' : 'green';
+    return reading > parseFloat(thresholdMap[sensor]) ? 'red' : 'green';
   };
 
   type Item = 
     | {
       type: 'chemical';
+      sensor: string,
       label: string;
       value: number;
-      threshold: string;
       unit: string;
     }
     | {
       type: 'icon';
+      sensor: string;
       name: keyof typeof Ionicons.glyphMap;
       value: number;
-      threshold: string;
       unit: string;
     };
 
   const items: Item[] = [
     {
       type: 'chemical',
+      sensor: 'H2S',
       label: 'H₂S',
       value: readings.H2S,
-      threshold: thresholds.H2SThreshold,
       unit: 'PPM',
     },
     {
       type: 'chemical',
+      sensor: 'O2',
       label: 'O₂',
       value: readings.O2,
-      threshold: thresholds.O2Threshold,
-      unit: 'PPM',
+      unit: '%',
     },
     {
       type: 'chemical',
+      sensor: 'CO',
       label: 'CO',
       value: readings.CO,
-      threshold: thresholds.COThreshold,
       unit: 'PPM',
     },
     {
       type: 'chemical',
+      sensor: 'CH4',
       label: 'CH₄',
       value: readings.CH4,
-      threshold: thresholds.CH4Threshold,
-      unit: 'PPM',
+      unit: '%',
     },
     {
       type: 'icon',
+      sensor: 'Temp',
       name: 'thermometer-outline',
       value: readings.Temp,
-      threshold: thresholds.TemperatureThreshold,
       unit: 'F',
     },
   ];
@@ -158,31 +157,31 @@ export default function HomeScreen() {
             flexDirection: 'row',
             alignItems: 'center' }}>
               <View style={[styles.circle,
-                { backgroundColor: getColor(loc.value, loc.threshold)},
+                { backgroundColor: getColor(loc.sensor, loc.value)},
               ]} />
               <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.05 }]}>
                 {loc.type === 'chemical' && (
                   <ThemedText style={[styles.rectText,
-                    { color: getColor(loc.value, loc.threshold) },
+                    { color: getColor(loc.sensor, loc.value) },
                   ]}>
                     {loc.label}
                   </ThemedText>
                 )}
                 {loc.type === 'icon' && (
-                  <Ionicons name={loc.name} size={22} color={getColor(loc.value, loc.threshold)} />
+                  <Ionicons name={loc.name} size={22} color={getColor(loc.sensor, loc.value)} />
                 )}
                 </View>
                 <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.03 }]}>
                   <ThemedText style={[
                     styles.rectText,
-                    { color: getColor(loc.value, loc.threshold) },
+                    { color: getColor(loc.sensor, loc.value) },
                   ]}>
                     {loc.value.toFixed(2)}
                   </ThemedText>
                 </View>
                 <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.03 }]}>
                   <ThemedText style={[styles.rectText,
-                    { color: getColor(loc.value, loc.threshold) },
+                    { color: getColor(loc.sensor, loc.value) },
                   ]}>
                     {loc.unit}
                   </ThemedText>

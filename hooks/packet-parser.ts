@@ -13,7 +13,7 @@ let simSequence = 0;
 export function generatePacket(): string {
   simSequence += 1;
   // const sensors = [1.11, 2.22, 3.33, 4.44, 5.55];
-  const sensors = Array.from({ length: 5 }, () => (Math.random() * 1000).toFixed(2));
+  const sensors = Array.from({ length: 5 }, () => (Math.random() * 100).toFixed(2));
   const packet = `[${simSequence}, ${sensors.join(", ")}]`;
   // console.log("Generated packet:", packet);
   return packet;
