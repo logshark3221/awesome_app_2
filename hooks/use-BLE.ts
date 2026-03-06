@@ -1,4 +1,4 @@
-/* eslint-disable no-bitwise */
+ 
 import { useMemo, useState } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
 import {
@@ -26,7 +26,10 @@ interface BluetoothLowEnergyApi {
 }
 
 function useBLE(): BluetoothLowEnergyApi {
-  const bleManager = useMemo(() => new BleManager(), []);
+  const bleManager = useMemo(() => {
+    if (Platform.OS === "web") return null;
+    return new BleManager();
+  }, []);
   const [allDevices, setAllDevices] = useState<Device[]>([]);
   const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
   const [HazmatReads, setHazmatReads] = useState<number>(0);
@@ -87,10 +90,11 @@ function useBLE(): BluetoothLowEnergyApi {
     }
   };
 
-  const isDuplicteDevice = (devices: Device[], nextDevice: Device) =>
+  const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex((device) => nextDevice.id === device.id) > -1;
 
-  const scanForPeripherals = () =>
+  const scanForPeripherals = () => {
+    if(!bleManager) return;
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         console.log(error);
@@ -98,15 +102,17 @@ function useBLE(): BluetoothLowEnergyApi {
       //if(device) console.log(device.name);
       if (device && device.name?.includes("LilyGo-HazardDrone-Bridge")) {
         setAllDevices((prevState: Device[]) => {
-          if (!isDuplicteDevice(prevState, device)) {
+          if (!isDuplicateDevice(prevState, device)) {
             return [...prevState, device];
           }
           return prevState;
         });
       }
     });
+  };
 
   const connectToDevice = async (device: Device) => {
+    if(!bleManager) return;
     try {
       const deviceConnection = await bleManager.connectToDevice(device.id);
       const mtu = await deviceConnection.requestMTU(64);
@@ -121,6 +127,7 @@ function useBLE(): BluetoothLowEnergyApi {
   };
 
   const disconnectFromDevice = () => {
+    if(!bleManager) return;
     if (connectedDevice) {
       bleManager.cancelDeviceConnection(connectedDevice.id);
       setConnectedDevice(null);
