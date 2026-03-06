@@ -3,9 +3,10 @@ import { useBluetoothData } from '@/hooks/use-bluetooth-data';
 import { useScreen } from '@/hooks/use-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import useBLE from '@/hooks/use-BLE';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CIRCLE_COUNT = 5;
@@ -30,6 +31,40 @@ export default function HomeScreen() {
     CH4: 0,
     Temp: 0,
   });
+
+  const handleConnect = async () => {
+    if (connectedDevice) {
+      disconnectFromDevice();
+      return;
+    }
+  
+    const isPermissionEnabled = await requestPermissions();
+    if (!isPermissionEnabled) {
+      console.log('Permissions not granted');
+      return;
+    }
+  
+    scanForPeripherals();
+  
+    // Give scan a few seconds to find devices
+    setTimeout(async () => {
+      if (allDevices.length > 0) {
+        await connectToDevice(allDevices[0]);
+      } else {
+        console.log('No devices found');
+      }
+    }, 8000);
+  };
+
+  const {
+    requestPermissions,
+    scanForPeripherals,
+    connectToDevice,
+    disconnectFromDevice,
+    allDevices,
+    connectedDevice,
+    HazmatReads,
+  } = useBLE();
 
   useEffect(() => {
     const loadThresholds = async () => {
@@ -144,54 +179,110 @@ export default function HomeScreen() {
   };
 });
 
-  return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.content}>
-        <View style={styles.trackContainer}>
-          <View style={styles.vRectangle} />
-          {locations.map(loc => (
-            <View key={loc.id} style={{ position: 'absolute',
-            top: loc.top,
-            left: 0,
-            right: 0,
-            flexDirection: 'row',
-            alignItems: 'center' }}>
-              <View style={[styles.circle,
-                { backgroundColor: getColor(loc.sensor, loc.value)},
-              ]} />
-              <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.05 }]}>
-                {loc.type === 'chemical' && (
-                  <ThemedText style={[styles.rectText,
-                    { color: getColor(loc.sensor, loc.value) },
-                  ]}>
-                    {loc.label}
-                  </ThemedText>
-                )}
-                {loc.type === 'icon' && (
-                  <Ionicons name={loc.name} size={22} color={getColor(loc.sensor, loc.value)} />
-                )}
-                </View>
-                <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.03 }]}>
-                  <ThemedText style={[
+return (
+  <SafeAreaView style={styles.safeArea}>
+    <View style={styles.content}>
+      <View style={styles.trackContainer}>
+        <View style={styles.vRectangle} />
+
+        {locations.map(loc => (
+          <View
+            key={loc.id}
+            style={{
+              position: 'absolute',
+              top: loc.top,
+              left: 0,
+              right: 0,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <View
+              style={[
+                styles.circle,
+                { backgroundColor: getColor(loc.sensor, loc.value) },
+              ]}
+            />
+
+            <View
+              style={[
+                styles.hRectangle,
+                { marginLeft: windowWidth * 0.05 },
+              ]}
+            >
+              {loc.type === 'chemical' && (
+                <ThemedText
+                  style={[
                     styles.rectText,
                     { color: getColor(loc.sensor, loc.value) },
-                  ]}>
-                    {loc.value.toFixed(2)}
-                  </ThemedText>
-                </View>
-                <View style={[styles.hRectangle, { marginLeft: windowWidth * 0.03 }]}>
-                  <ThemedText style={[styles.rectText,
-                    { color: getColor(loc.sensor, loc.value) },
-                  ]}>
-                    {loc.unit}
-                  </ThemedText>
-                </View>
+                  ]}
+                >
+                  {loc.label}
+                </ThemedText>
+              )}
+
+              {loc.type === 'icon' && (
+                <Ionicons
+                  name={loc.name}
+                  size={22}
+                  color={getColor(loc.sensor, loc.value)}
+                />
+              )}
             </View>
-          ))}
-        </View>
+
+            <View
+              style={[
+                styles.hRectangle,
+                { marginLeft: windowWidth * 0.03 },
+              ]}
+            >
+              <ThemedText
+                style={[
+                  styles.rectText,
+                  { color: getColor(loc.sensor, loc.value) },
+                ]}
+              >
+                {loc.value.toFixed(2)}
+              </ThemedText>
+            </View>
+
+            <View
+              style={[
+                styles.hRectangle,
+                { marginLeft: windowWidth * 0.03 },
+              ]}
+            >
+              <ThemedText
+                style={[
+                  styles.rectText,
+                  { color: getColor(loc.sensor, loc.value) },
+                ]}
+              >
+                {loc.unit}
+              </ThemedText>
+            </View>
+
+          </View>
+        ))}
       </View>
-    </SafeAreaView>
-  );
+    </View>
+
+    <TouchableOpacity
+      style={[
+        styles.connectButton,
+        {
+          backgroundColor: connectedDevice ? 'red' : '#2E7D32',
+        },
+      ]}
+      onPress={handleConnect}
+    >
+      <ThemedText style={styles.connectText}>
+        {connectedDevice ? 'Disconnect' : 'Connect'}
+      </ThemedText>
+    </TouchableOpacity>
+
+  </SafeAreaView>
+);
 }
 
 const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.create({
@@ -257,4 +348,24 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
     width: windowWidth * 0.15,
     height: windowHeight * 0.5,
   },
+
+  connectButton: {
+    position: 'absolute',
+    bottom: windowHeight * 0.05,
+    alignSelf: 'center',
+    width: windowWidth * 0.6,
+    height: windowHeight * 0.07,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+  },
+  
+  connectText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'jost',
+  },
+  
 });
