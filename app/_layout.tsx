@@ -19,6 +19,7 @@ export default function RootLayout() {
   const pathname = usePathname();
 
   const isThresholds = pathname === '/thresholds';
+  const isGraph = pathname === '/graph';
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -26,7 +27,12 @@ export default function RootLayout() {
         <View style={{ flex: 1}}>
           <View style={styles.header}>
             <ThemedText type="title" style={styles.title}>
-              {pathname === '/' ? 'GO/NO-GO': 'THRESHOLDS'}
+              {
+                pathname === '/' ? 'GO/NO-GO': 
+                pathname === '/thresholds' ? 'THRESHOLDS' :
+                pathname === '/graph'? 'GRAPH': 
+                ''
+              }
             </ThemedText>
           </View>
           <Stack screenOptions={{ headerShown: false }}>
@@ -40,10 +46,19 @@ export default function RootLayout() {
                 position: 'absolute',
                 left: windowWidth * 0.05,
               },
-            ]}>
+            ]}
+            onPress={() => {
+              if (isGraph) {
+                router.replace('/');
+              }
+              else {
+                router.replace('/graph');
+              }
+            }}>
               <MaterialCommunityIcons
                 name="chart-line"
-                size={windowWidth * 0.125} />
+                size={windowWidth * 0.125}
+                color={isGraph ? '#9D2235' : 'black'} />
             </Pressable>
 
             <Pressable style={[
