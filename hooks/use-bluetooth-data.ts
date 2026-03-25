@@ -11,7 +11,7 @@ export function useBluetoothData() {
         const raw = generatePacket();
         const parsed = parsePacket(raw);
         if (parsed) setLatestPacket(parsed);
-    }, 1500); // generate a new packet every 1500ms
+    }, 5000); // generate a new packet every 5000ms
 
     return () => clearInterval(interval);
   }, []);

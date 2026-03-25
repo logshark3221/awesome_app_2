@@ -6,9 +6,13 @@ import { StatusBar } from 'expo-status-bar';
 import { Pressable, StyleSheet, View } from 'react-native';
 import 'react-native-reanimated';
 
+
+import { BluetoothContext } from '@/hooks/bluetooth-context';
+import { useBluetoothData } from '@/hooks/use-bluetooth-data';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useScreen } from '@/hooks/use-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function RootLayout() {
   const { windowWidth, windowHeight } = useScreen();
@@ -21,78 +25,82 @@ export default function RootLayout() {
   const isThresholds = pathname === '/thresholds';
   const isGraph = pathname === '/graph';
 
+  const bluetooth = useBluetoothData();
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <SafeAreaView style={styles.safeArea}>
-        <View style={{ flex: 1}}>
-          <View style={styles.header}>
-            <ThemedText type="title" style={styles.title}>
-              {
-                pathname === '/' ? 'GO/NO-GO': 
-                pathname === '/thresholds' ? 'THRESHOLDS' :
-                pathname === '/graph'? 'GRAPH': 
-                ''
-              }
-            </ThemedText>
-          </View>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-          </Stack>
-          {/* Bottom banner */}
-          <View style={styles.bottomBanner}>
-            <Pressable style={[
-              styles.button,
-              {
-                position: 'absolute',
-                left: windowWidth * 0.05,
-              },
-            ]}
-            onPress={() => {
-              if (isGraph) {
-                router.replace('/');
-              }
-              else {
-                router.replace('/graph');
-              }
-            }}>
-              <MaterialCommunityIcons
-                name="chart-line"
-                size={windowWidth * 0.125}
-                color={isGraph ? '#9D2235' : 'black'} />
-            </Pressable>
+      <BluetoothContext.Provider value={bluetooth}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={{ flex: 1}}>
+            <View style={styles.header}>
+              <ThemedText type="title" style={styles.title}>
+                {
+                  pathname === '/' ? 'GO/NO-GO': 
+                  pathname === '/thresholds' ? 'THRESHOLDS' :
+                  pathname === '/graph'? 'GRAPH': 
+                  ''
+                }
+              </ThemedText>
+            </View>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+            </Stack>
+            {/* Bottom banner */}
+            <View style={styles.bottomBanner}>
+              <Pressable style={[
+                styles.button,
+                {
+                  position: 'absolute',
+                  left: windowWidth * 0.05,
+                },
+              ]}
+              onPress={() => {
+                if (isGraph) {
+                  router.replace('/');
+                }
+                else {
+                  router.replace('/graph');
+                }
+              }}>
+                <MaterialCommunityIcons
+                  name="chart-line"
+                  size={windowWidth * 0.125}
+                  color={isGraph ? '#9D2235' : 'black'} />
+              </Pressable>
 
-            <Pressable style={[
-              styles.button,
-            ]}>
-              <MaterialCommunityIcons
-                name="database"
-                size={windowWidth * 0.125} />
-            </Pressable>
+              <Pressable style={[
+                styles.button,
+              ]}>
+                <MaterialCommunityIcons
+                  name="database"
+                  size={windowWidth * 0.125} />
+              </Pressable>
 
-            <Pressable style={[
-              styles.button,
-              {
-                position: 'absolute',
-                right: windowWidth * 0.05,
-              },
-            ]}
-            onPress={() => {
-              if (isThresholds) {
-                router.replace('/');
-              }
-              else {
-                router.replace('/thresholds');
-              }
-            }}>
-              <MaterialCommunityIcons
-                name="pencil-box-outline"
-                size={windowWidth * 0.125}
-                color={isThresholds? '#9D2235' : 'black'} />
-            </Pressable>
+              <Pressable style={[
+                styles.button,
+                {
+                  position: 'absolute',
+                  right: windowWidth * 0.05,
+                },
+              ]}
+              onPress={() => {
+                if (isThresholds) {
+                  router.replace('/');
+                }
+                else {
+                  router.replace('/thresholds');
+                }
+              }}>
+                <MaterialCommunityIcons
+                  name="pencil-box-outline"
+                  size={windowWidth * 0.125}
+                  color={isThresholds? '#9D2235' : 'black'} />
+              </Pressable>
+            </View>
+            <StatusBar style="auto" />
           </View>
-          <StatusBar style="auto" />
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </BluetoothContext.Provider>
     </ThemeProvider>
   );
 }

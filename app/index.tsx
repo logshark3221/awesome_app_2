@@ -1,11 +1,11 @@
 import { ThemedText } from '@/components/themed-text';
-import { useBluetoothData } from '@/hooks/use-bluetooth-data';
 import { useScreen } from '@/hooks/use-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useBluetoothContext } from '@/hooks/bluetooth-context';
 import useBLE from '@/hooks/use-BLE';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -81,7 +81,7 @@ export default function HomeScreen() {
   }, []);
 
   // set values based on Bluetooth data
-  const { latestPacket } = useBluetoothData();
+  const { latestPacket } = useBluetoothContext();
   useEffect(()=> {
     if (!latestPacket) return;
     setReadings({
