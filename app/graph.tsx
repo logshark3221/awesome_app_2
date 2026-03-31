@@ -55,7 +55,6 @@ export default function GraphScreen() {
                         width={Math.max(chartData.length * 40, windowWidth)}
                         height={300}
                         spacing={40}
-                        isAnimated
                         hideDataPoints={false}
                         yAxisLabelTexts={[]}
                         yAxisColor="transparent"
