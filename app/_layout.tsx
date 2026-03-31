@@ -24,6 +24,7 @@ export default function RootLayout() {
 
   const isThresholds = pathname === '/thresholds';
   const isGraph = pathname === '/graph';
+  const isRecordings = pathname === '/recordings';
 
   const bluetooth = useBluetoothData();
 
@@ -38,6 +39,7 @@ export default function RootLayout() {
                   pathname === '/' ? 'GO/NO-GO': 
                   pathname === '/thresholds' ? 'THRESHOLDS' :
                   pathname === '/graph'? 'GRAPH': 
+                  pathname === '/recordings'? 'RECORDINGS': 
                   ''
                 }
               </ThemedText>
@@ -47,6 +49,8 @@ export default function RootLayout() {
             </Stack>
             {/* Bottom banner */}
             <View style={styles.bottomBanner}>
+
+              {/* Graph Screen */}
               <Pressable style={[
                 styles.button,
                 {
@@ -68,14 +72,25 @@ export default function RootLayout() {
                   color={isGraph ? '#9D2235' : 'black'} />
               </Pressable>
 
+              {/* Recorded Sessions */}
               <Pressable style={[
                 styles.button,
-              ]}>
+              ]}
+              onPress={() => {
+                if (isRecordings) {
+                  router.replace('/');
+                }
+                else {
+                  router.replace('/recordings');
+                }
+              }}>
                 <MaterialCommunityIcons
                   name="database"
-                  size={windowWidth * 0.125} />
+                  size={windowWidth * 0.125}
+                  color={isRecordings ? '#9D2235' : 'black'} />
               </Pressable>
 
+              {/* // Thresholds */}
               <Pressable style={[
                 styles.button,
                 {
