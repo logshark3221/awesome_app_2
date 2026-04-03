@@ -1,27 +1,22 @@
 import { useEffect, useState } from "react";
-import { generatePacket, ParsedPacket, parsePacket } from "./packet-parser";
+import { ParsedPacket, parsePacket } from "./packet-parser";
 
-export function useBluetoothData() {
+export function useBluetoothData(HazmatReads: string) {
   const [latestPacket, setLatestPacket] = useState<ParsedPacket | null>(null);
   const [history, setHistory] = useState<ParsedPacket[]>([]);
 
-  // this generates random packets
-  // replace and use parsePacket and setLatestPacket w/ real data
   useEffect(() => {
-    const interval = setInterval(() => {
-        const raw = generatePacket();
-        const parsed = parsePacket(raw);
-        if (parsed) {
-          setLatestPacket(parsed);
-          setHistory(prev => {
-            const updated = [...prev, parsed];
-            return updated.slice(-50);
-          })
-        }
-    }, 5000); // generate a new packet every 5000ms
+    if (!HazmatReads) return;
 
-    return () => clearInterval(interval);
-  }, []);
-  
+    const parsed = parsePacket(HazmatReads);
+    if (parsed) {
+      setLatestPacket(parsed);
+      setHistory(prev => {
+        const updated = [...prev, parsed];
+        return updated.slice(-50);
+      });
+    }
+  }, [HazmatReads]); // 🔥 reacts to real updates instead of interval
+
   return { latestPacket, history };
 }

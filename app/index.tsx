@@ -1,11 +1,12 @@
 import { ThemedText } from '@/components/themed-text';
+import { useBluetoothData } from '@/hooks/use-bluetooth-data';
 import { useScreen } from '@/hooks/use-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useBluetoothContext } from '@/hooks/bluetooth-context';
+
 import useBLE from '@/hooks/use-BLE';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -53,7 +54,7 @@ export default function HomeScreen() {
       } else {
         console.log('No devices found');
       }
-    }, 8000);
+    }, 2000);
   };
 
   const {
@@ -66,8 +67,9 @@ export default function HomeScreen() {
     HazmatReads,
   } = useBLE();
 
-  useEffect(() => {
-    const loadThresholds = async () => {
+  // run once
+useEffect(() => {
+  const loadThresholds = async () => {
       const updated = { ...DEFAULT_THRESHOLDS };
       for (const key of Object.keys(DEFAULT_THRESHOLDS)) {
         const stored = await AsyncStorage.getItem(key);
@@ -77,21 +79,31 @@ export default function HomeScreen() {
       }
       setThresholds(updated);
     };
-    loadThresholds();
-  }, []);
+
+  loadThresholds();
+}, []);
+
+  useEffect(() => {
+    console.log("HazmatReads:", HazmatReads);
+
+  }, [HazmatReads]);
+
+  
+
 
   // set values based on Bluetooth data
-  const { latestPacket } = useBluetoothContext();
+  //const { latestPacket } = useBluetoothContext();
+  const bluetooth = useBluetoothData(HazmatReads);
   useEffect(()=> {
-    if (!latestPacket) return;
+    if (!bluetooth.latestPacket) return;
     setReadings({
-      H2S: latestPacket.parsedH2S,
-      O2: latestPacket.parsedO2,
-      CO: latestPacket.parsedCO,
-      CH4: latestPacket.parsedCH4,
-      Temp: latestPacket.parsedTemp,
+      H2S: bluetooth.latestPacket.parsedH2S,
+      O2: bluetooth.latestPacket.parsedO2,
+      CO: bluetooth.latestPacket.parsedCO,
+      CH4: bluetooth.latestPacket.parsedCH4,
+      Temp: bluetooth.latestPacket.parsedTemp,
     });
-  }, [latestPacket]);
+  }, [bluetooth.latestPacket]);
 
   const getColor = (sensor: string, reading: number) => {
     if (sensor === 'O2') {

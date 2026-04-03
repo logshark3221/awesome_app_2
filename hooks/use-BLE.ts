@@ -22,7 +22,7 @@ interface BluetoothLowEnergyApi {
   disconnectFromDevice: () => void;
   connectedDevice: Device | null;
   allDevices: Device[];
-  HazmatReads: number;
+  HazmatReads: string;
 }
 
 function useBLE(): BluetoothLowEnergyApi {
@@ -32,7 +32,7 @@ function useBLE(): BluetoothLowEnergyApi {
   }, []);
   const [allDevices, setAllDevices] = useState<Device[]>([]);
   const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
-  const [HazmatReads, setHazmatReads] = useState<number>(0);
+  const [HazmatReads, setHazmatReads] = useState<string>("[]");
 
   const requestAndroid31Permissions = async () => {
     const bluetoothScanPermission = await PermissionsAndroid.request(
@@ -131,7 +131,7 @@ function useBLE(): BluetoothLowEnergyApi {
     if (connectedDevice) {
       bleManager.cancelDeviceConnection(connectedDevice.id);
       setConnectedDevice(null);
-      setHazmatReads(0);
+      setHazmatReads("[]");
     }
   };
 
@@ -148,11 +148,8 @@ function useBLE(): BluetoothLowEnergyApi {
     }
 
     const rawData = base64.decode(characteristic.value);
-    let innerHazmatReads = rawData[1].charCodeAt(0);
 
-    console.log(rawData);
-
-    setHazmatReads(innerHazmatReads);
+    setHazmatReads(rawData);
   };
 
   const startStreamingData = async (device: Device) => {
