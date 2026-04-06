@@ -8,7 +8,6 @@ import 'react-native-reanimated';
 
 
 import { BluetoothContext } from '@/hooks/bluetooth-context';
-import useBLE from '@/hooks/use-BLE';
 import { useBluetoothData } from '@/hooks/use-bluetooth-data';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useScreen } from '@/hooks/use-screen';
@@ -27,9 +26,7 @@ export default function RootLayout() {
   const isGraph = pathname === '/graph';
   const isRecordings = pathname === '/recordings';
 
-  const { HazmatReads } = useBLE();
-
-  const bluetooth = useBluetoothData(HazmatReads);
+  const bluetooth = useBluetoothData();
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>

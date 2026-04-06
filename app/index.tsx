@@ -1,5 +1,5 @@
 import { ThemedText } from '@/components/themed-text';
-import { useBluetoothData } from '@/hooks/use-bluetooth-data';
+import { useBluetoothContext } from '@/hooks/bluetooth-context';
 import { useScreen } from '@/hooks/use-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
@@ -7,7 +7,6 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-import useBLE from '@/hooks/use-BLE';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CIRCLE_COUNT = 5;
@@ -33,20 +32,30 @@ export default function HomeScreen() {
     Temp: 0,
   });
 
+  const {
+    latestPacket,
+    requestPermissions,
+    scanForPeripherals,
+    connectToDevice,
+    disconnectFromDevice,
+    allDevices,
+    connectedDevice,
+  } = useBluetoothContext();
+
   const handleConnect = async () => {
     if (connectedDevice) {
       disconnectFromDevice();
       return;
     }
-  
+
     const isPermissionEnabled = await requestPermissions();
     if (!isPermissionEnabled) {
       console.log('Permissions not granted');
       return;
     }
-  
+
     scanForPeripherals();
-  
+
     // Give scan a few seconds to find devices
     setTimeout(async () => {
       if (allDevices.length > 0) {
@@ -56,16 +65,6 @@ export default function HomeScreen() {
       }
     }, 2000);
   };
-
-  const {
-    requestPermissions,
-    scanForPeripherals,
-    connectToDevice,
-    disconnectFromDevice,
-    allDevices,
-    connectedDevice,
-    HazmatReads,
-  } = useBLE();
 
   // run once
 useEffect(() => {
@@ -83,27 +82,19 @@ useEffect(() => {
   loadThresholds();
 }, []);
 
-  useEffect(() => {
-    console.log("HazmatReads:", HazmatReads);
-
-  }, [HazmatReads]);
-
-  
 
 
   // set values based on Bluetooth data
-  //const { latestPacket } = useBluetoothContext();
-  const bluetooth = useBluetoothData(HazmatReads);
   useEffect(()=> {
-    if (!bluetooth.latestPacket) return;
+    if (!latestPacket) return;
     setReadings({
-      H2S: bluetooth.latestPacket.parsedH2S,
-      O2: bluetooth.latestPacket.parsedO2,
-      CO: bluetooth.latestPacket.parsedCO,
-      CH4: bluetooth.latestPacket.parsedCH4,
-      Temp: bluetooth.latestPacket.parsedTemp,
+      H2S: latestPacket.parsedH2S,
+      O2: latestPacket.parsedO2,
+      CO: latestPacket.parsedCO,
+      CH4: latestPacket.parsedCH4,
+      Temp: latestPacket.parsedTemp,
     });
-  }, [bluetooth.latestPacket]);
+  }, [latestPacket]);
 
   const getColor = (sensor: string, reading: number) => {
     if (sensor === 'O2') {

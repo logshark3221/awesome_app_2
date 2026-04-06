@@ -1,12 +1,24 @@
+import useBLE from '@/hooks/use-BLE';
 import { useEffect, useState } from "react";
+import { BluetoothContextType } from "./bluetooth-context";
 import { ParsedPacket, parsePacket } from "./packet-parser";
 
-export function useBluetoothData(HazmatReads: string) {
+
+export function useBluetoothData(): BluetoothContextType {
+  const {
+    HazmatReads,
+    requestPermissions,
+    scanForPeripherals,
+    connectToDevice,
+    disconnectFromDevice,
+    connectedDevice,
+    allDevices,
+  } = useBLE();
   const [latestPacket, setLatestPacket] = useState<ParsedPacket | null>(null);
   const [history, setHistory] = useState<ParsedPacket[]>([]);
 
   useEffect(() => {
-    if (!HazmatReads) return;
+    if (!HazmatReads || HazmatReads === "[]") return;
 
     const parsed = parsePacket(HazmatReads);
     if (parsed) {
@@ -16,7 +28,16 @@ export function useBluetoothData(HazmatReads: string) {
         return updated.slice(-50);
       });
     }
-  }, [HazmatReads]); // 🔥 reacts to real updates instead of interval
+  }, [HazmatReads]);
 
-  return { latestPacket, history };
+  return {
+    latestPacket,
+    history,
+    requestPermissions,
+    scanForPeripherals,
+    connectToDevice,
+    disconnectFromDevice,
+    connectedDevice,
+    allDevices,
+  };
 }
