@@ -3,7 +3,7 @@ import { useBluetoothContext } from '@/hooks/bluetooth-context';
 import { useScreen } from '@/hooks/use-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
@@ -61,7 +61,7 @@ export default function HomeScreen() {
       if (allDevices.length > 0) {
         await connectToDevice(allDevices[0]);
       } else {
-        console.log('No devices found');
+        Alert.alert('No Devices Found', 'Make sure your device is powered on and nearby, then try again.');
       }
     }, 2000);
   };
