@@ -13,16 +13,31 @@ export default function ThresholdScreen() {
 
   const test = () => {
     try {
-      const file = new File(Paths.cache, 'example.txt');
+      const file = new File(Paths.cache, 'example.json');
 
       // Write
       if (! file.exists) {
         file.create(); // can throw an error if the file already exists or no permission to create it
-        file.write('Hello, world!');
+        
       }
+
+      const string_test = "{'val': 16, 'age': 22, 'nested': {'bested': 'no way'}}";
+      const json_test = {'val': 16, 'age': 22, 'nested': {'bested': 'no way'}};
+      const temp = JSON.stringify(json_test);
+      file.write(temp);
       
       // Read
+      console.log(file.name);
       console.log(file.textSync()); // Hello, world!
+
+      const temp2 = file.textSync();
+      console.log(JSON.parse(temp2))
+
+      // Cleanup
+      // const file1 = new File(Paths.cache, 'example.json');
+      // const file2 = new File(Paths.cache, 'example.txt');
+      // file1.delete()
+      // file2.delete()
 
     } catch (error) {
       console.error(error);
