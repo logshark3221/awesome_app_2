@@ -54,7 +54,7 @@ export default function ThresholdScreen() {
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={true}>
-        <ThemedText>H₂S</ThemedText>
+        <ThemedText darkColor='black' lightColor='black'>H₂S</ThemedText>
           <TextInput
             style={styles.input}
             onChangeText={(text) => storeThresholds(onChangeH2S, 'H2SThreshold', text)}
@@ -63,7 +63,7 @@ export default function ThresholdScreen() {
             keyboardType="numeric"
         />
 
-        <ThemedText>O₂</ThemedText>
+        <ThemedText darkColor='black' lightColor='black'>O₂</ThemedText>
         <TextInput
           style={styles.input}
           onChangeText={(text) => storeThresholds(onChangeO2, 'O2Threshold', text)}
@@ -72,7 +72,7 @@ export default function ThresholdScreen() {
           keyboardType="numeric"
         />
 
-        <ThemedText>CO</ThemedText>
+        <ThemedText darkColor='black' lightColor='black'>CO</ThemedText>
         <TextInput
           style={styles.input}
           onChangeText={(text) => storeThresholds(onChangeCO, 'COThreshold', text)}
@@ -81,7 +81,7 @@ export default function ThresholdScreen() {
           keyboardType="numeric"
         />
 
-        <ThemedText>CH₄</ThemedText>
+        <ThemedText darkColor='black' lightColor='black'>CH₄</ThemedText>
         <TextInput
           style={styles.input}
           onChangeText={(text) => storeThresholds(onChangeCH4, 'CH4Threshold', text)}
@@ -90,8 +90,8 @@ export default function ThresholdScreen() {
           keyboardType="numeric"
         />
 
-        <ThemedText>Temperature</ThemedText>
-        <TextInput
+        <ThemedText darkColor='black' lightColor='black'>Temperature</ThemedText>
+        <TextInput 
           style={styles.input}
           onChangeText={(text) => storeThresholds(onChangeTemperature, 'TemperatureThreshold', text)}
           value={TemperatureThreshold}
