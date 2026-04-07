@@ -27,11 +27,11 @@ export function useBluetoothData(): BluetoothContextType {
       setLatestPacket(parsed);
       setHistory(prev => {
         const updated = [...prev, parsed];
-        return updated.slice(-50);
+        return updated;
       });
     }
   }, [HazmatReads]);
-  
+
   // Packet generation, no BT
   useEffect(() => {
     if (USE_BLUETOOTH) return;
