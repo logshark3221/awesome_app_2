@@ -1,12 +1,12 @@
 import { ThemedText } from '@/components/themed-text';
+import { useBluetoothContext } from '@/hooks/bluetooth-context';
 import { useScreen } from '@/hooks/use-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useBluetoothContext } from '@/hooks/bluetooth-context';
-import useBLE from '@/hooks/use-BLE';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CIRCLE_COUNT = 5;
@@ -32,42 +32,43 @@ export default function HomeScreen() {
     Temp: 0,
   });
 
-  const handleConnect = async () => {
-    if (connectedDevice) {
-      disconnectFromDevice();
-      return;
-    }
-  
-    const isPermissionEnabled = await requestPermissions();
-    if (!isPermissionEnabled) {
-      console.log('Permissions not granted');
-      return;
-    }
-  
-    scanForPeripherals();
-  
-    // Give scan a few seconds to find devices
-    setTimeout(async () => {
-      if (allDevices.length > 0) {
-        await connectToDevice(allDevices[0]);
-      } else {
-        console.log('No devices found');
-      }
-    }, 8000);
-  };
-
   const {
+    latestPacket,
     requestPermissions,
     scanForPeripherals,
     connectToDevice,
     disconnectFromDevice,
     allDevices,
     connectedDevice,
-    HazmatReads,
-  } = useBLE();
+  } = useBluetoothContext();
 
-  useEffect(() => {
-    const loadThresholds = async () => {
+  const handleConnect = async () => {
+    if (connectedDevice) {
+      disconnectFromDevice();
+      return;
+    }
+
+    const isPermissionEnabled = await requestPermissions();
+    if (!isPermissionEnabled) {
+      console.log('Permissions not granted');
+      return;
+    }
+
+    scanForPeripherals();
+
+    // Give scan a few seconds to find devices
+    setTimeout(async () => {
+      if (allDevices.length > 0) {
+        await connectToDevice(allDevices[0]);
+      } else {
+        Alert.alert('No Devices Found', 'Make sure your device is powered on and nearby, then try again.');
+      }
+    }, 2000);
+  };
+
+  // run once
+useEffect(() => {
+  const loadThresholds = async () => {
       const updated = { ...DEFAULT_THRESHOLDS };
       for (const key of Object.keys(DEFAULT_THRESHOLDS)) {
         const stored = await AsyncStorage.getItem(key);
@@ -77,11 +78,13 @@ export default function HomeScreen() {
       }
       setThresholds(updated);
     };
-    loadThresholds();
-  }, []);
+
+  loadThresholds();
+}, []);
+
+
 
   // set values based on Bluetooth data
-  const { latestPacket } = useBluetoothContext();
   useEffect(()=> {
     if (!latestPacket) return;
     setReadings({
