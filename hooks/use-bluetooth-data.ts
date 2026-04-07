@@ -41,7 +41,8 @@ export function useBluetoothData(): BluetoothContextType {
         setLatestPacket(parsed);
         setHistory(prev => {
           const updated = [...prev, parsed];
-          return updated.slice(-50);
+          // console.log(updated)
+          return updated;
         })
       }
     }, 5000); // generate a new packet every 5000ms

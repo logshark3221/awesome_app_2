@@ -21,7 +21,7 @@ export default function GraphScreen() {
             case 'CH4': return { value: packet.parsedCH4 };
             case 'Temp': return { value: packet.parsedTemp };
         }
-    })
+    }).slice(-50)
 
     return (
         <View style={styles.content}>
