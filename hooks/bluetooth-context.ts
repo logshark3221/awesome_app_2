@@ -5,6 +5,7 @@ import { ParsedPacket } from './packet-parser';
 export interface BluetoothContextType {
     latestPacket: ParsedPacket | null;
     history: ParsedPacket[];
+    clearHistory: () => void;
     requestPermissions: () => Promise<boolean>;
     scanForPeripherals: () => void;
     connectToDevice: (device: Device) => Promise<void>;
@@ -16,6 +17,7 @@ export interface BluetoothContextType {
 export const BluetoothContext = createContext<BluetoothContextType>({
     latestPacket: null,
     history: [],
+    clearHistory: () => {},
     requestPermissions: async () => false,
     scanForPeripherals: () => {},
     connectToDevice: async () => {},

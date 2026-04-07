@@ -31,6 +31,7 @@ export function useBluetoothData(): BluetoothContextType {
       });
     }
   }, [HazmatReads]);
+  
   // Packet generation, no BT
   useEffect(() => {
     if (USE_BLUETOOTH) return;
@@ -41,7 +42,6 @@ export function useBluetoothData(): BluetoothContextType {
         setLatestPacket(parsed);
         setHistory(prev => {
           const updated = [...prev, parsed];
-          // console.log(updated)
           return updated;
         })
       }
@@ -49,9 +49,17 @@ export function useBluetoothData(): BluetoothContextType {
 
     return () => clearInterval(interval);
   }, []);
+
+  function clearHistory(): void {
+    setHistory(prev => {
+      return [];
+    })
+  }
+
   return {
     latestPacket,
     history,
+    clearHistory,
     requestPermissions,
     scanForPeripherals,
     connectToDevice,

@@ -1,47 +1,74 @@
 import React from 'react';
-import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
 import { useScreen } from '@/hooks/use-screen';
 
-import { File, Directory, Paths } from 'expo-file-system';
+import { ThemedText } from '@/components/themed-text';
+import { File, Paths } from 'expo-file-system';
 
+import { useBluetoothContext } from '@/hooks/bluetooth-context';
 
 export default function ThresholdScreen() {
   const { windowWidth, windowHeight } = useScreen();
   const styles = createStyles(windowWidth, windowHeight);
 
-  const test = () => {
-    try {
-      const file = new File(Paths.cache, 'example.json');
+  const { history, clearHistory } = useBluetoothContext();
+  const sessionData = history.map(packet => {return packet})
 
-      // Write
+  const writeToFile = () => {
+    try {
+
+      // Gets file
+      const file = new File(Paths.cache, 'example.json');
       if (! file.exists) {
-        file.create(); // can throw an error if the file already exists or no permission to create it
-        
+        file.create(); // Can throw an error if the file already exists or no permission to create it
       }
 
-      const string_test = "{'val': 16, 'age': 22, 'nested': {'bested': 'no way'}}";
-      const json_test = {'val': 16, 'age': 22, 'nested': {'bested': 'no way'}};
-      const temp = JSON.stringify(json_test);
+      // Converts history to a string, and writes it
+      const temp = JSON.stringify(history);
       file.write(temp);
-      
-      // Read
-      console.log(file.name);
-      console.log(file.textSync()); // Hello, world!
 
-      const temp2 = file.textSync();
-      console.log(JSON.parse(temp2))
-
-      // Cleanup
-      // const file1 = new File(Paths.cache, 'example.json');
-      // const file2 = new File(Paths.cache, 'example.txt');
-      // file1.delete()
-      // file2.delete()
+      console.log("File written successfully")
 
     } catch (error) {
       console.error(error);
     }
+  }
+
+  const readFromFile = () => {
+    try {
+
+      // Gets file
+      const file = new File(Paths.cache, 'example.json');
+      if (! file.exists) {
+        console.log("File does not exist!")
+        return
+      }
+
+      const temp = file.textSync();
+      console.log(JSON.parse(temp))
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const cleanFiles = () => {
+    try {
+
+      const file1 = new File(Paths.cache, 'example.json');
+      const file2 = new File(Paths.cache, 'example.txt');
+      file1.delete()
+      file2.delete()
+
+      console.log("Files cleaned successfully")
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const printToLog = () => {
+    console.log(sessionData)
   }
 
   return (
@@ -54,10 +81,36 @@ export default function ThresholdScreen() {
         showsVerticalScrollIndicator={true}>
 
         <Button
-          onPress={test}
-          title={"Test Button"}
+          onPress={writeToFile}
+          title={"Write Session to File"}
           color='#808080'
         />
+
+        <Button
+          onPress={readFromFile}
+          title={"Read Session from File"}
+          color='#808080'
+        />
+
+        <Button
+          onPress={cleanFiles}
+          title={"Clean (Delete) Files"}
+          color='#808080'
+        />
+
+        <Button
+          onPress={printToLog}
+          title={"Print Session to Log"}
+          color='#808080'
+        />
+
+        <Button
+          onPress={clearHistory}
+          title={"Clear Session"}
+          color='#808080'
+        />
+
+        <ThemedText darkColor='black' lightColor='black'>Current Session Size: {sessionData.length}</ThemedText>
         
       </ScrollView>
     </KeyboardAvoidingView>
