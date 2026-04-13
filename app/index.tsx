@@ -14,12 +14,16 @@ const CIRCLE_COUNT = 5;
 export default function HomeScreen() {
 
   const DEFAULT_THRESHOLDS = {
-    H2SThreshold: '10.00',
-    O2Threshold: '23.50',
-    O2LowerThreshold: '19.50',
-    COThreshold: '50.00',
-    CH4Threshold: '5.00',
-    TemperatureThreshold: '95.00',
+    H2SLower: '0',
+    H2SUpper: '10.00',
+    O2Lower: '19.50',
+    O2Upper: '23.50',
+    COLower: '0',
+    COUpper: '50.00',
+    CH4Lower: '0',
+    CH4Upper: '5.00',
+    TempLower: '32.00',
+    TempUpper: '95.00',
   };
 
   const [thresholds, setThresholds] = useState(DEFAULT_THRESHOLDS);
@@ -97,19 +101,21 @@ useEffect(() => {
   }, [latestPacket]);
 
   const getColor = (sensor: string, reading: number) => {
-    if (sensor === 'O2') {
-      const lower = parseFloat(thresholds.O2LowerThreshold);
-      const upper = parseFloat(thresholds.O2Threshold);
-      return reading < lower || reading > upper ? 'red' : 'green';
-    }
-    const thresholdMap: Record<string, string> = {
-      H2S: thresholds.H2SThreshold,
-      CO: thresholds.COThreshold,
-      CH4: thresholds.CH4Threshold,
-      Temp: thresholds.TemperatureThreshold,
+    const map: Record<string, { lower: string; upper: string}> = {
+      H2S: { lower: thresholds.H2SLower, upper: thresholds.H2SUpper },
+      O2: { lower: thresholds.O2Lower, upper: thresholds.O2Upper },
+      CO: { lower: thresholds.COLower, upper: thresholds.COUpper },
+      CH4: { lower: thresholds.CH4Lower, upper: thresholds.CH4Upper },
+      Temp: { lower: thresholds.TempLower, upper: thresholds.TempUpper },
     };
 
-    return reading > parseFloat(thresholdMap[sensor]) ? 'red' : 'green';
+    const lower = parseFloat(map[sensor].lower);
+    const upper = parseFloat(map[sensor].upper);
+    const val = Number(reading);
+
+    if (!Number.isFinite(lower) || !Number.isFinite(upper)) return 'green';
+
+    return val < lower || val > upper ? 'red' : 'green';
   };
 
   type Item = 
