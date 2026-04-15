@@ -1,5 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
@@ -13,14 +14,62 @@ export default function GraphScreen() {
     const { history } = useBluetoothContext();
     const [selectedSensor, setSelectedSensor] = useState<'H2S' | 'O2' | 'CO' | 'CH4' | 'Temp'>('H2S');
 
+    const [thresholds, setThresholds] = useState({
+        H2SLower: '0',
+        H2SUpper: '10.00',
+        O2Lower: '19.50',
+        O2Upper: '23.50',
+        COLower: '0',
+        COUpper: '50.00',
+        CH4Lower: '0',
+        CH4Upper: '5.00',
+        TempLower: '32.00',
+        TempUpper: '95.00',
+    });
+
+    useEffect(() => {
+        const loadThresholds = async () => {
+            const updated = { ...thresholds };
+            for(const key of Object.keys(updated)) {
+                const stored = await AsyncStorage.getItem(key);
+                if(stored !== null) {
+                    updated[key as keyof typeof thresholds] = stored;
+                }
+            }
+            setThresholds(updated);
+        };
+        loadThresholds();
+    }, []);
+
+    const getColor = (sensor: string, reading: number) => {
+        const map: Record<string, { lower: string; upper: string }> = {
+            H2S: { lower: thresholds.H2SLower, upper: thresholds.H2SUpper },
+            O2: { lower: thresholds.O2Lower, upper: thresholds.O2Upper },
+            CO: { lower: thresholds.COLower, upper: thresholds.COUpper },
+            CH4: { lower: thresholds.CH4Lower, upper: thresholds.CH4Upper },
+            Temp: { lower: thresholds.TempLower, upper: thresholds.TempUpper },
+        };
+
+        const lower = parseFloat(map[sensor].lower);
+        const upper = parseFloat(map[sensor].upper);
+
+        if(!Number.isFinite(lower) || !Number.isFinite(upper)) return 'green';
+
+        return reading < lower || reading > upper ? 'red' : 'green';
+    }
+
     const chartData = history.map(packet => {
+        let value = 0;
         switch(selectedSensor) {
-            case 'H2S': return { value: packet.parsedH2S };
-            case 'O2': return { value: packet.parsedO2 };
-            case 'CO': return { value: packet.parsedCO };
-            case 'CH4': return { value: packet.parsedCH4 };
-            case 'Temp': return { value: packet.parsedTemp };
+            case 'H2S': value = packet.parsedH2S; break;
+            case 'O2': value = packet.parsedO2; break;
+            case 'CO': value = packet.parsedCO; break;
+            case 'CH4': value = packet.parsedCH4; break;
+            case 'Temp': value = packet.parsedTemp; break;
         }
+        return {
+            value, dataPointColor: getColor(selectedSensor, value),
+        };
     }).slice(-50)
 
     return (
@@ -36,19 +85,6 @@ export default function GraphScreen() {
                 <Picker.Item label="Temp" value="Temp" />
             </Picker>
             <View style={{ flexDirection: 'row', padding: 10 }}>
-                {/* <View style={{ justifyContent: 'space-between', height: 300, marginRight: 5}}>
-                    <Text>100</Text>
-                    <Text>90</Text>
-                    <Text>80</Text>
-                    <Text>70</Text>
-                    <Text>60</Text>
-                    <Text>50</Text>
-                    <Text>40</Text>
-                    <Text>30</Text>
-                    <Text>20</Text>
-                    <Text>10</Text>
-                    <Text>0</Text>
-                </View> */}
                 <ScrollView horizontal showsHorizontalScrollIndicator={true}>
                     <LineChart
                         data={chartData}
