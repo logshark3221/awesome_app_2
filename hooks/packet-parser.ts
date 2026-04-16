@@ -32,9 +32,9 @@ export function parsePacket(raw: string): ParsedPacket | null {
   // console.log("Parsed packet:", { sequenceNum: values[0], parsedH2S: values[1], parsedO2: values[2], parsedCO: values[3], parsedCH4: values[4], parsedTemp: values[5] });
   return {
     sequenceNum: values[0],
-    parsedH2S: values[1],
-    parsedO2: values[2],
-    parsedCO: values[3],
+    parsedO2: values[1],
+    parsedCO: values[2],
+    parsedH2S: values[3],
     parsedCH4: values[4],
     parsedTemp: values[5]
   };
