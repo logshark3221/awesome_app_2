@@ -319,6 +319,7 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
     height: windowHeight * 0.5,
     width: windowWidth * 0.15, //60
     borderRadius: 10,
+    borderWidth: 1,
   },
 
   hRectangle: {
@@ -326,6 +327,7 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
     height: windowWidth * 0.1,
     width: windowWidth * 0.23,
     borderRadius: 10,
+    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -347,7 +349,7 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
   trackContainer: {
     position: 'absolute',
     left: windowWidth * 0.05,
-    top: windowHeight * 0.07,
+    top: windowHeight * 0, // Raise slightly, maybe 0.07, but this fixes formatting on the simulator
     width: windowWidth * 0.5,
     height: windowHeight * 0.5,
   },
@@ -356,6 +358,7 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
     position: 'relative',
     width: windowWidth * 0.15,
     height: windowHeight * 0.5,
+    
   },
 
   connectButton: {
@@ -368,6 +371,7 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
+    borderWidth: 1,
   },
   
   connectText: {
