@@ -346,16 +346,14 @@ export default function ThresholdScreen() {
           </View>
 
           <View style = {[styles.hRectangle, { flex: 0.2, backgroundColor: '#9D2235'},]}>
-              <Button onPress={writeToFile} title={"Write Current Session to File"} color='#9D2235'/>
+              {selectedChart == "Current Session" ? <Button onPress={writeToFile} title={"Write Current Session to File"} color='#9D2235'/> : <Button onPress={copyToDownloads} title={"Export File (To Downloads Folder)"} color='#9D2235'/>}
           </View>
 
           <View style = {[styles.hRectangle, { flex: 0.2, backgroundColor: '#9D2235'},]}>
               {selectedChart == "Current Session" ? <Button onPress={clearHistory} title={"Clear Current Session"} color='#9D2235'/> : <Button onPress={deleteSession} title={"Delete Recorded Session"} color='#9D2235'/>}
           </View>
 
-          {selectedChart == "Current Session" ? null : <View style = {[styles.hRectangle, { flex: 0.2, backgroundColor: '#9D2235'},]}>
-            <Button onPress={copyToDownloads} title={"Export File (To Downloads Folder)"} color='#9D2235'/>
-          </View>}
+          
               
         </View>
 
