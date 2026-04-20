@@ -354,7 +354,7 @@ export default function ThresholdScreen() {
           </View>
 
           {selectedChart == "Current Session" ? null : <View style = {[styles.hRectangle, { flex: 0.2, backgroundColor: '#9D2235'},]}>
-            <Button onPress={copyToDownloads} title={"Download File (To Downloads Folder)"} color='#9D2235'/>
+            <Button onPress={copyToDownloads} title={"Export File (To Downloads Folder)"} color='#9D2235'/>
           </View>}
               
         </View>
