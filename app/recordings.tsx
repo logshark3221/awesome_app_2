@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useScreen } from '@/hooks/use-screen';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Directory, File, Paths } from 'expo-file-system';
+import { Directory, downloadAsync, File, Paths } from 'expo-file-system';
 
 import { useBluetoothContext } from '@/hooks/bluetooth-context';
 import { ParsedPacket } from '@/hooks/packet-parser';
@@ -42,7 +42,7 @@ export default function ThresholdScreen() {
         // Gets the name of the new session based on existing sessions
         else {
           const files = data_directory.list()
-          files.sort()
+          files.sort(sortFiles)
           
           if (files.length > 0) {
             const last_file_number = (parseInt(files[files.length - 1].name.split("_")[1].split(".")[0]) + 1).toString().padStart(4, "0")
@@ -59,7 +59,7 @@ export default function ThresholdScreen() {
         const temp = JSON.stringify(history);
         file.write(temp);
 
-        console.log("File written successfully")
+        console.log("File " + new_file_name + " written successfully")
 
       } catch (error) {
         console.error(error);
@@ -78,6 +78,7 @@ export default function ThresholdScreen() {
           return
         }
 
+        // Parses file from json format
         const temp = file.textSync();
         const temp2 = JSON.parse(temp)
         return temp2
@@ -87,12 +88,33 @@ export default function ThresholdScreen() {
       }
     }
 
+    // Copies a json file to the downloads folder
+    // Also just realized half of these functions don't follow the const () => {} format. Whoops
+    const copyToDownloads = async () => {
+      try {
+
+        // Gets file
+        const file_name = selectedChart + ".json"
+        const file = new File(data_directory, file_name)
+        if (! file.exists) {
+          console.log("File " + file.name + " does not exist! Copy Failed")
+          return
+        }
+
+        // Copies to downloads
+        const target_file = downloadAsync
+
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
     // Deletes all json files
     const cleanFiles = () => {
       try {
 
         const files = data_directory.list()
-          files.sort()
+        files.sort(sortFiles)
 
         for (let file of files) {
           file.delete()
@@ -104,9 +126,9 @@ export default function ThresholdScreen() {
       }
     }
 
-    // Prints the current session to the console
-    const printToConsole = () => {
-      console.log(sessionData)
+    // Helper function, sorts files by their names
+    function sortFiles(a : Directory | File, b : Directory | File) {
+      return ('' + a.name).localeCompare(b.name);
     }
 
     // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -300,7 +322,7 @@ export default function ThresholdScreen() {
               dropdownIconRippleColor={"black"}
             >
               <Picker.Item label="Current Session" value="Current Session" />
-              {data_directory.list().map((item, index) => (
+              {data_directory.list().sort(sortFiles).map((item, index) => (
                 <Picker.Item 
                   key={index}
                   label={item.name.split(".")[0]} 
@@ -330,6 +352,11 @@ export default function ThresholdScreen() {
           <View style = {[styles.hRectangle, { flex: 0.2, backgroundColor: '#9D2235'},]}>
               {selectedChart == "Current Session" ? <Button onPress={clearHistory} title={"Clear Current Session"} color='#9D2235'/> : <Button onPress={deleteSession} title={"Delete Recorded Session"} color='#9D2235'/>}
           </View>
+
+          {selectedChart == "Current Session" ? null : <View style = {[styles.hRectangle, { flex: 0.2, backgroundColor: '#9D2235'},]}>
+            <Button onPress={copyToDownloads} title={"Download File (To Downloads Folder)"} color='#9D2235'/>
+          </View>}
+              
         </View>
 
         <LineChart
