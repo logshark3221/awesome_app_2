@@ -173,7 +173,6 @@ export default function ThresholdScreen() {
       if (value == "Current Session") {
         setLastSelected("Current Session")
         setLastData(null)
-        return null
       }
 
       else if (!(value == lastSelected)){
@@ -188,10 +187,32 @@ export default function ThresholdScreen() {
     
     // Parses read session data into data that can be shown on the graph
     function graphMap(value) {
+
+      // Special case for "current session", displays the current session
+      if (selectedChart == "Current Session") {
+        const chartData = history.map((packet: ParsedPacket) => {
+          let value = 0;
+          switch(selectedSensor) {
+              case 'H2S': value = packet.parsedH2S; break;
+              case 'O2': value = packet.parsedO2; break;
+              case 'CO': value = packet.parsedCO; break;
+              case 'CH4': value = packet.parsedCH4; break;
+              case 'Temp': value = packet.parsedTemp; break;
+          }
+          return {
+              value, dataPointColor: getColor(selectedSensor, value),
+          }
+        })
+
+        return chartData
+      }
+
+      // Shouldn't happen, but just in case
       if (value == null) {
         return null
       }
 
+      // Displays the recorded session
       const chartData = value.map((packet: ParsedPacket) => {
         let value = 0;
         switch(selectedSensor) {
@@ -307,7 +328,7 @@ export default function ThresholdScreen() {
           </View>
 
           <View style = {[styles.hRectangle, { flex: 0.2, backgroundColor: '#9D2235'},]}>
-              {selectedChart == "Current Session" ? <Button onPress={deleteSession} title={"Clear Current Session"} color='#9D2235'/> : <Button onPress={deleteSession} title={"Delete Recorded Session"} color='#9D2235'/>}
+              {selectedChart == "Current Session" ? <Button onPress={clearHistory} title={"Clear Current Session"} color='#9D2235'/> : <Button onPress={deleteSession} title={"Delete Recorded Session"} color='#9D2235'/>}
           </View>
         </View>
 
