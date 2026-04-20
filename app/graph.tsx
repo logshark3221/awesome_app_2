@@ -74,16 +74,18 @@ export default function GraphScreen() {
 
     return (
         <View style={styles.content}>
-            <Picker
-                selectedValue={selectedSensor}
-                onValueChange={(itemValue) => setSelectedSensor(itemValue)}
-            >
-                <Picker.Item label="H2S" value="H2S" />
-                <Picker.Item label="O2" value="O2" />
-                <Picker.Item label="CO" value="CO" />
-                <Picker.Item label="CH4" value="CH4" />
-                <Picker.Item label="Temp" value="Temp" />
-            </Picker>
+            <View style = {[styles.hRectangle, { flex: 0.2, backgroundColor: '#9D2235'},]}>
+                <Picker
+                    selectedValue={selectedSensor}
+                    onValueChange={(itemValue) => setSelectedSensor(itemValue)}
+                >
+                    <Picker.Item label="H2S" value="H2S" />
+                    <Picker.Item label="O2" value="O2" />
+                    <Picker.Item label="CO" value="CO" />
+                    <Picker.Item label="CH4" value="CH4" />
+                    <Picker.Item label="Temp" value="Temp" />
+                </Picker>
+            </View>
             <View style={{ flexDirection: 'row', padding: 10 }}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={true}>
                     <LineChart
@@ -106,4 +108,16 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
         flex: 1,
         backgroundColor: '#D3D3D3',
     },
+
+    hRectangle: {
+    backgroundColor: '#9D2235',
+    borderRadius: 10,
+    flex: 0.3,
+    height: 40,
+    borderWidth: 1,
+    padding: 2,
+    margin: 6,
+    justifyContent: 'center',
+    // alignItems: 'center',
+  },
 })

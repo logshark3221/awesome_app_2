@@ -405,7 +405,7 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
   },
 
   hRectangle: {
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#9D2235',
     borderRadius: 10,
     flex: 0.3,
     height: 40,
