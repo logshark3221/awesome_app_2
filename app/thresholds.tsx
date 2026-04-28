@@ -73,11 +73,11 @@ export default function ThresholdScreen() {
             </View>
             
             <View style = {[styles.hRectangle, { flex: 0.4, backgroundColor: '#9D2235'},]}>
-            <ThemedText darkColor='white' lightColor='white'> Upper Bound </ThemedText>
+            <ThemedText darkColor='white' lightColor='white'> Lower Bound </ThemedText>
             </View>
 
             <View style = {[styles.hRectangle, { flex: 0.4, backgroundColor: '#9D2235'},]}>
-            <ThemedText darkColor='white' lightColor='white'> Lower Bound </ThemedText>
+            <ThemedText darkColor='white' lightColor='white'> Upper Bound </ThemedText>
             </View>
           </View>
 
