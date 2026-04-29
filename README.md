@@ -38,6 +38,7 @@ This app expects an **Atmega32U4** connected to:
 - TypeScript
 - AsyncStorage (react-native-async-storage)
 - Gifted Charts (react-native-gifted-charts)
+- Expo File System (expo-file-system)
 
 ### Installation instructions for Windows
 
@@ -89,3 +90,19 @@ This app expects an **Atmega32U4** connected to:
     - If a reading is over the upper threshold or under the lower threshold, it will appear red on the Go/No-Go screen and the Graph screen
 
 - The thresholds are saved locally via AsyncStorage and persist over the screens
+
+
+#### Recordings
+
+- Press the button in the center of the bottom navigation bar to move to the recordings screen
+
+- By default, the recordings screen shows all recorded sensor data for the current recorded session.
+    - The graph is otherwise identical to the one on the graph screen. Use the dropdown menu to display different sensor data to the graph.
+
+- There are two buttons when the current session is selected that save or clear the current session.
+    - The top button saves the session to the app's internal files. 
+    - The bottom button clears all of the current session's recorded readings.
+
+- Recorded sessions can be selected by the dropdown menu at the top of the screen. Once selected, the graph will display that session's recorded readings. The two buttons now change functionality.
+    - The top button will prompt the user to save the selected session to a folder of their choosing. The output file is a json file that contains all of that session's recorded sensor readings.
+    - The bottom button deletes the selected session from the app's internal files.
