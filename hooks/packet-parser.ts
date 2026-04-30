@@ -12,8 +12,10 @@ let simSequence = 0;
 // function that generates random packets
 export function generatePacket(): string {
   simSequence += 1;
+  // O2, CO, H2S, CH4, Temperature
   // const sensors = [1.11, 2.22, 3.33, 4.44, 5.55];
-  const sensors = Array.from({ length: 5 }, () => (Math.random() * 100).toFixed(2));
+  // const sensors = Array.from({ length: 5 }, () => (Math.random() * 100).toFixed(2));
+  const sensors = [(Math.random() * 5) + 18, (Math.random() * 50) + 0, (Math.random() * 1) + 0, (Math.random() * 4) + 0, (Math.random() * 3) + 72];
   const packet = `[${simSequence}, ${sensors.join(", ")}]`;
   // console.log("Generated packet:", packet);
   return packet;

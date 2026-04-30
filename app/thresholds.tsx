@@ -274,7 +274,7 @@ const createStyles = (windowWidth: number, windowHeight: number) => StyleSheet.c
     // bottom: windowHeight * 0.05,
     alignSelf: 'center',
     width: windowWidth * 0.6,
-    height: windowHeight * 0.07,
+    height: windowHeight * 0.12,
     borderRadius: 15,
     padding: 4,
     margin: 6,
